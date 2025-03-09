@@ -1,4 +1,5 @@
 # AeronauticaHelper Setup
+This is an application that watches your AFK boat in Aeronautica! You will get a notification via the webhook if the game crashes, if you disconnect, or if your boat suddenly stops (island collision, low fuel, etc), accompanied by a screenshot. Though possible, errors occur minimally when the camera is positioned properly (step 6).
 
 ### 1. **Python Environment**
 
