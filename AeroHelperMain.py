@@ -16,6 +16,8 @@
 Version: 1
 '''
 
+# Star the repo and ill prob make v2 which includes built in anti afk, and notification when close to destination (this can possibly also link to your phone, which can set an alarm)
+
 
 import time
 import re
@@ -119,12 +121,12 @@ def main():
                 logging.info(f"Distance moved in this cycle: {movement:.2f} nm")
                 
                 if movement < threshold:
-                    send_webhook_alert(f"Alert: Movement below threshold. Expected at least {threshold:.2f} nm, but moved {movement:.2f} nm.", include_screenshot=True)
+                    send_webhook_alert(f"Alert: Movement possibly below threshold. Expected at least {threshold:.2f} nm, but moved {movement:.2f} nm.", include_screenshot=True)
             
             previous_distance = current_distance
             previous_time = current_time
         else:
-            logging.warning("Distance not found in OCR text.")
+            logging.warning("Application possibly crashed. Check attachment for more information.")
             send_webhook_alert("Alert: Distance not found in OCR text!", include_screenshot=True)
             previous_time = current_time
 
