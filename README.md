@@ -1,44 +1,39 @@
 # AeronauticaHelper Setup
-This is an application that watches your AFK boat in Aeronautica! You will get a notification via the webhook if the game crashes, if you disconnect, or if your boat suddenly stops (island collision, low fuel, etc), accompanied by a screenshot. Though possible, errors occur minimally when the camera is positioned properly (step 6).
+This is an application that watches your AFK boat in Aeronautica! You will get a notification via the webhook if the game crashes, if you disconnect, or if your boat suddenly stops (island collision, out of fuel, etc), accompanied by a screenshot. Though possible, errors occur minimally when the camera is positioned properly. **Version 2 introduces AutoSteer** and built-in Anti-AFK.
+
+## Functionality
+
+As previously stated, the application will recognize the following and send alerts via the designated webhook with a screenshot to better asses the issue:
+- Disconnect from game
+- Boat stops (island collision, out of fuel, etc)
+- Game crashes
+- When you approach the destination (ship will stop too)
+
+**AutoSteer** gets the current bearing and matches it to the destination. Automated keystrokes are then performed to adjust accordingly.⭐**Essentially, assuming everything works properly, you will pull out your ship to open sea and come back when you get a notification!**
+
+---
 
 ### 1. **Python Environment**
 
-- **Python Version:**  
+- **Python Version:** 
   Make sure you have Python 3.7 or higher installed. You can download it from [python.org](https://www.python.org/downloads/).
 
 ---
 
-### 2. **Required Libraries**
-
-This project uses several Python packages:
-
-- **PyAutoGUI:**  
-  For capturing screenshots of your computer screen.
-  
-- **EasyOCR:**  
-  For performing Optical Character Recognition (OCR) on the screenshots. Unlike Tesseract, EasyOCR doesn’t require additional external installations.
-  
-- **NumPy:**  
-  To convert the screenshot (from a PIL image) into a NumPy array that EasyOCR can process.
-  
-- **Requests:**  
-  To send HTTP requests, specifically to send alerts via a Discord webhook.
----
-
-### 3. **Installing Dependencies**
+### 2. **Installing Dependencies**
 
 Use pip to install the required libraries. In your terminal or command prompt run:
 
 ```bash
-pip install pyautogui easyocr numpy requests
+pip install pyautogui easyocr numpy requests time re logging io json pydirectinput threading
 ```
 or
 ```bash
-py -m pip install pyautogui easyocr numpy requests
+py -m pip install pyautogui easyocr numpy requests time re logging io json pydirectinput threading
 ```
 ---
 
-### 4. **Setup**
+### 3. **Setup**
 
 - **Webhook URL:**  
   The code sends alerts to a Discord channel using a webhook. Replace the `WEBHOOK_URL` constant in the code with your actual Discord webhook URL:
@@ -48,13 +43,13 @@ py -m pip install pyautogui easyocr numpy requests
   Replace `SHIP_TOP_SPEED` with the corresponding speed. Customize `CYCLE_INTERVAL` and `LEEWAY` to your desire.
 ---
 
-### 5. **Project Structure**
+### 4. **Project Structure**
 
 Your project might look like this:
 ```
 /YourProjectFolder
 ├── AeroHelperMain.py    # Contains the application code
-├── distance_log.txt     # Log file created by the application
+├── log_data.txt         # Log file created by the application
 └── README.md            # (Optional) Documentation for your project
 ```
 
@@ -69,7 +64,7 @@ Your project might look like this:
 
 ---
 
-### 6. **Running the Application**
+### 5. **Running the Application**
 
 **Run the Script:**  
    In your terminal or command prompt, navigate to your project directory and run:
@@ -77,8 +72,16 @@ Your project might look like this:
    python AeroHelperMain.py
    ```
 
-  For enhanced results, consider positioning your camera below the ship (for more OCR clarity)
+  For enhanced results, consider positioning your camera below the ship (for more OCR clarity) if you are NOT using AutoSteer.
   ![AeroHelperDemo](https://github.com/user-attachments/assets/9446c1ef-afa7-4377-a426-c6cf99e3c2a9)
+
+
+  ### If you are using AutoSteer, consider turning ROBLOX's Graphics Quality to the LOWEST option, as this makes the water's color more consistent (for whatever reason), leading to enhanced OCR clarity.
+
+---
+
+### 6. **False Positives**
+  While false positives happen, they can be mitigated by following step 5. Please do not report these as bugs because there is nothing I can do!
 
 ---
 
