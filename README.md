@@ -89,5 +89,5 @@ Your project might look like this:
 
 ---
 
-# THIS SCRIPT **HAS** BEEN CLEARED WITH AERONAUTICA STAFF. THIS IS 100% SAFE TO USE.
+# THIS CODE HAS BEEN CLEARED WITH AERONAUTICA STAFF. THIS IS 100% SAFE TO USE.
 ![Screenshot 2025-03-12 092507](https://github.com/user-attachments/assets/0778f8ec-c958-479e-938d-5bea5166b56b)
