@@ -25,11 +25,11 @@ As previously stated, the application will recognize the following and send aler
 Use pip to install the required libraries. In your terminal or command prompt run:
 
 ```bash
-pip install pyautogui easyocr numpy requests time re logging io json pydirectinput threading
+pip install pyautogui easyocr numpy requests pydirectinput
 ```
 or
 ```bash
-py -m pip install pyautogui easyocr numpy requests time re logging io json pydirectinput threading
+py -m pip install pyautogui easyocr numpy requests pydirectinput
 ```
 ---
 
