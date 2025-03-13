@@ -25,11 +25,11 @@ As previously stated, the application will recognize the following and send aler
 Use pip to install the required libraries. In your terminal or command prompt run:
 
 ```bash
-pip install pyautogui easyocr numpy requests pydirectinput
+pip install pyautogui easyocr numpy requests pynput
 ```
 or
 ```bash
-py -m pip install pyautogui easyocr numpy requests pydirectinput
+py -m pip install pyautogui easyocr numpy requests pynput
 ```
 ---
 
@@ -76,7 +76,7 @@ Your project might look like this:
   ![AeroHelperDemo](https://github.com/user-attachments/assets/9446c1ef-afa7-4377-a426-c6cf99e3c2a9)
 
 
-  ### If you are using AutoSteer, consider turning ROBLOX's Graphics Quality to the LOWEST option, as this makes the water's color more consistent (for whatever reason), leading to enhanced OCR clarity.
+  ### If you are using AutoSteer, you must use camera 5, also consider turning ROBLOX's Graphics Quality to the LOWEST option, as this makes the water's color more consistent (for whatever reason), leading to enhanced OCR clarity.
 
 ---
 

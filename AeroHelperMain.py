@@ -28,7 +28,7 @@ import numpy as np
 import easyocr
 import io
 import json
-import pydirectinput as direct
+import pynput
 import threading
 
 # --------------------------------------------------
@@ -37,10 +37,20 @@ import threading
 logging.basicConfig(filename='log_data.txt', level=logging.INFO,
                     format='%(asctime)s - %(message)s')
 
+from pynput.keyboard import Key, Controller as KeyboardController
+from pynput.mouse import Button, Controller as MouseController
+keyboard = KeyboardController()
+mouse = MouseController()
+
+#Defining variables for later
+cycle = 0
+alert_sent = False
+destination_reached = False
+
 # Constants:
 SHIP_TOP_SPEED = 20           # Ship's top speed in knots
-CYCLE_INTERVAL = 1 * 60       # Cycle interval in seconds (must be within 1m-19m, 1m is recomended)
-LEEWAY = 0.3                  # Leeway in nautical miles
+CYCLE_INTERVAL = 1 * 60       # Cycle interval in seconds (must be within 1m-19m and a multiple of 60, 1m is recomended)
+LEEWAY = 0.3                  # Leeway in nautical miles for crash detection (keep relatively low)
 WEBHOOK_URL = "your_webhook_url"
 
 # --------------------------------------------------
@@ -53,25 +63,27 @@ reader = easyocr.Reader(['en'], gpu=False) # Change to true if needed, only comp
 # --------------------------------------------------
 def send_webhook_alert(message, include_screenshot=False):
     payload = {"content": message}
-    if include_screenshot:
-        try:
-            screenshot = pyautogui.screenshot()
-            buffer = io.BytesIO()
-            screenshot.save(buffer, format="PNG")
-            buffer.seek(0)
-            files = {"file": ("screenshot.png", buffer, "image/png")}
-            response = requests.post(WEBHOOK_URL, data={"payload_json": json.dumps(payload)}, files=files)
-            response.raise_for_status()
-            logging.info("[$] Alert sent with screenshot: " + message)
-        except Exception as e:
-            logging.error("[$] Failed to send alert with screenshot: " + str(e))
-    else:
-        try:
-            response = requests.post(WEBHOOK_URL, json=payload)
-            response.raise_for_status()
-            logging.info("[$] Alert sent: " + message)
-        except Exception as e:
-            logging.error("[$] Failed to send alert: " + str(e))
+    if alert_sent == False:
+        alert_sent == True
+        if include_screenshot:
+            try:
+                screenshot = pyautogui.screenshot()
+                buffer = io.BytesIO()
+                screenshot.save(buffer, format="PNG")
+                buffer.seek(0)
+                files = {"file": ("screenshot.png", buffer, "image/png")}
+                response = requests.post(WEBHOOK_URL, data={"payload_json": json.dumps(payload)}, files=files)
+                response.raise_for_status()
+                logging.info("[$] Alert sent with screenshot: " + message)
+            except Exception as e:
+                logging.error("[$] Failed to send alert with screenshot: " + str(e))
+        else:
+            try:
+                response = requests.post(WEBHOOK_URL, json=payload)
+                response.raise_for_status()
+                logging.info("[$] Alert sent: " + message)
+            except Exception as e:
+                logging.error("[$] Failed to send alert: " + str(e))
 
 # --------------------------------------------------
 # 4. Screenshot Capture and OCR Processing
@@ -153,9 +165,9 @@ def run_autosteer(ocr_text):
             return
 
         logging.info(f"[&] AutoSteer - Pressing {key_to_press} for {hold_duration} sec (difference: {diff})")
-        direct.keyDown(key_to_press)
+        keyboard.press(key_to_press)
         time.sleep(hold_duration)
-        direct.keyUp(key_to_press)
+        keyboard.release(key_to_press)
         time.sleep(3)
     else:
         logging.warning("[&] AutoSteer - Target or current bearing not found in OCR text.")
@@ -173,14 +185,12 @@ def main():
     
     if auto_steer_enabled:
         logging.info("[$] AutoSteer enabled.")
-        direct.click()
-        direct.press('5')
 
     previous_distance = None
     previous_time = None
 
     while True:
-        direct.click()
+        mouse.click(Button.left)
         current_time = time.time()
         ocr_text = capture_and_process_screenshot()
         logging.info("[$] OCR text: " + ocr_text)
@@ -202,9 +212,12 @@ def main():
             previous_distance = current_distance
             previous_time = current_time
 
-            if current_distance < 3:
-                direct.press('z')
+            if current_distance < 3 and destination_reached == False:
+                keyboard.press('z')
+                time.sleep(0.1)
+                keyboard.release('z')
                 send_webhook_alert("[!] Boat needs manual docking. Boat is currently stopping.", include_screenshot=True)
+                destination_reached == True
         else:
             logging.warning("[$] Distance not found in OCR text.")
             send_webhook_alert("[!] ROBLOX possibly crashed.", include_screenshot=True)
@@ -213,7 +226,12 @@ def main():
         if auto_steer_enabled:
             threading.Thread(target=run_autosteer, args=(ocr_text,)).start()
 
+        if cycle * CYCLE_INTERVAL % 60 == 0: # every 60mins
+            alert_sent = False
+        
+        cycle = cycle + 1
         time.sleep(CYCLE_INTERVAL)
+        logging.info("Cycle Complete")
 
 # --------------------------------------------------
 # 9. Application Entry Point
