@@ -18,6 +18,15 @@ As previously stated, the application will recognize the following and send aler
 - **Python Version:** 
   Make sure you have Python 3.7 or higher installed. You can download it from [python.org](https://www.python.org/downloads/).
 
+- **Install Certificates (macOS):**
+  On macOS, the program requires that you install [CA certificates](https://stackoverflow.com/a/61422058) for Python in order to allow it to communicate with the Discord webhook that this program relies on for logging. To do this:
+  - Open the folder /Applications/Python 3.x (x is the version you have just downloaded).
+  - Double click the file `Install Certificates.command`. It will open a terminal and install the required certificates.
+    ![image](https://github.com/user-attachments/assets/d41ea9b3-23ec-4a12-9ab6-793b75e2c779)
+
+
+
+
 ---
 
 ### 2. **Installing Dependencies**
