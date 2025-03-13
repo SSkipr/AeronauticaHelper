@@ -43,13 +43,12 @@ keyboard = KeyboardController()
 mouse = MouseController()
 
 #Defining variables for later
-cycle = 0
 alert_sent = False
 destination_reached = False
 
 # Constants:
 SHIP_TOP_SPEED = 20           # Ship's top speed in knots
-CYCLE_INTERVAL = 1 * 60       # Cycle interval in seconds (must be within 1m-19m and a multiple of 60, 1m is recomended)
+CYCLE_INTERVAL = 1 * 60       # Cycle interval in seconds (must be within 1m-19m and divide into 60, 1m is recomended)
 LEEWAY = 0.3                  # Leeway in nautical miles for crash detection (keep relatively low)
 WEBHOOK_URL = "your_webhook_url"
 
@@ -176,10 +175,12 @@ def run_autosteer(ocr_text):
 # 8. Main Application Logic
 # --------------------------------------------------
 def main():
+    cycle = 0
     print("Aeronautica Helper v2")
     print("You will have 5 seconds to navigate to the ROBLOX tab after completing the following question.")
     
     auto_steer_input = input("Enable AutoSteer? (y/n): ")
+    print("Navigate to the ROBLOX tab")
     time.sleep(5)
     auto_steer_enabled = auto_steer_input.lower().startswith('y')
     
