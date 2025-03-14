@@ -48,7 +48,7 @@ destination_reached = False
 
 # Constants:
 SHIP_TOP_SPEED = 20           # Ship's top speed in knots
-CYCLE_INTERVAL = 1 * 60       # Cycle interval in seconds (must be within 1m-19m and divide into 60, 1m is recomended)
+CYCLE_INTERVAL = 1 * 60       # Cycle interval in seconds (must be within 1m-19m and factor of 60, 1m is recomended)
 LEEWAY = 0.3                  # Leeway in nautical miles for crash detection (keep relatively low)
 WEBHOOK_URL = "your_webhook_url"
 
@@ -227,12 +227,12 @@ def main():
         if auto_steer_enabled:
             threading.Thread(target=run_autosteer, args=(ocr_text,)).start()
 
-        if cycle * CYCLE_INTERVAL % 60 == 0: # every 60mins
+        if cycle * CYCLE_INTERVAL % 60 == 0 and destination_reached == False: # every 60mins without reaching the destination
             alert_sent = False
         
         cycle = cycle + 1
         time.sleep(CYCLE_INTERVAL)
-        logging.info("Cycle Complete")
+        logging.info("[$] Cycle complete.")
 
 # --------------------------------------------------
 # 9. Application Entry Point
