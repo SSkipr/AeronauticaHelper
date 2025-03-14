@@ -61,6 +61,8 @@ reader = easyocr.Reader(['en'], gpu=False) # Change to true if needed, only comp
 # 3. Webhook Alert Function (with screenshot on error)
 # --------------------------------------------------
 def send_webhook_alert(message, include_screenshot=False):
+    global alert_sent
+    alert_sent = alert_sent
     payload = {"content": message}
     if alert_sent == False and destination_reached == False:
         alert_sent = True
@@ -186,7 +188,7 @@ def main():
     
     if auto_steer_enabled:
         logging.info("[$] AutoSteer enabled.")
-
+    destination_reached = False
     previous_distance = None
     previous_time = None
 
