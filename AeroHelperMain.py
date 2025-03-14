@@ -17,19 +17,46 @@ Version: 2
 '''
 
 
-
-
+# --------------------------------------------------
+# 0. Library setup
+# --------------------------------------------------
+import subprocess
 import time
 import re
 import logging
-import pyautogui
-import requests
-import numpy as np
-import easyocr
 import io
 import json
-import pydirectinput as direct
 import threading
+import sys
+import importlib
+
+# I don't really know how good this code is, but we'll see.
+# List of non-vanilla libraries (libraries that do not come with Python's base install) that need to be imported.
+# Make sure you put all of these libraries just before section 1 as well so that they can be called later in the program as well.
+imports = ['pyautogui', 'requests', 'numpy', 'easyocr', 'pydirectinput']
+
+# Create a dictionary in order to catch any failed imports.
+missing_imports = []
+for library_name in imports:
+    try:
+        importlib.import_module(library_name)
+    except ImportError:
+        missing_imports.append(library_name)
+
+if len(missing_imports) != 0:
+    print("It looks like you don't have the following Python libraries installed:")
+    print(*missing_imports)
+    installMessage = input("These libraries are necessary for running the program. Would you like to install them? (y/n): ")
+    if installMessage.lower() != "y":
+        print("As these libraries are necessary for running the program, the program is unable to continue, and will now exit.")
+        print("If you wish to re-download the libraries, please re-run this program and you will be brought back to the previous dialog.")
+        exit()
+    else:
+        print("Installation in progress - please wait.")
+        for library in missing_imports:
+            subprocess.check_call([sys.executable, "-m", "pip", "install", library])
+
+import pyautogui, requests, numpy, easyocr, pydirectinput
 
 # --------------------------------------------------
 # 1. Configuration and Logging Setup
@@ -78,7 +105,7 @@ def send_webhook_alert(message, include_screenshot=False):
 # --------------------------------------------------
 def capture_and_process_screenshot():
     screenshot = pyautogui.screenshot()
-    image = np.array(screenshot)
+    image = numpy.array(screenshot)
     results = reader.readtext(image)
     text = " ".join([res[1] for res in results])
     return text
@@ -153,9 +180,9 @@ def run_autosteer(ocr_text):
             return
 
         logging.info(f"[&] AutoSteer - Pressing {key_to_press} for {hold_duration} sec (difference: {diff})")
-        direct.keyDown(key_to_press)
+        pydirectinput.keyDown(key_to_press)
         time.sleep(hold_duration)
-        direct.keyUp(key_to_press)
+        pydirectinput.keyUp(key_to_press)
         time.sleep(3)
     else:
         logging.warning("[&] AutoSteer - Target or current bearing not found in OCR text.")
@@ -173,14 +200,14 @@ def main():
     
     if auto_steer_enabled:
         logging.info("[$] AutoSteer enabled.")
-        direct.click()
-        direct.press('5')
+        pydirectinput.click()
+        pydirectinput.press('5')
 
     previous_distance = None
     previous_time = None
 
     while True:
-        direct.click()
+        pydirectinput.click()
         current_time = time.time()
         ocr_text = capture_and_process_screenshot()
         logging.info("[$] OCR text: " + ocr_text)
@@ -203,7 +230,7 @@ def main():
             previous_time = current_time
 
             if current_distance < 3:
-                direct.press('z')
+                pydirectinput.press('z')
                 send_webhook_alert("[!] Boat needs manual docking. Boat is currently stopping.", include_screenshot=True)
         else:
             logging.warning("[$] Distance not found in OCR text.")
