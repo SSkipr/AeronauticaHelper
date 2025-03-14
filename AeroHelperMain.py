@@ -62,8 +62,8 @@ reader = easyocr.Reader(['en'], gpu=False) # Change to true if needed, only comp
 # --------------------------------------------------
 def send_webhook_alert(message, include_screenshot=False):
     payload = {"content": message}
-    if alert_sent == False:
-        alert_sent == True
+    if alert_sent == False and destination_reached == False:
+        alert_sent = True
         if include_screenshot:
             try:
                 screenshot = pyautogui.screenshot()
@@ -218,7 +218,7 @@ def main():
                 time.sleep(0.1)
                 keyboard.release('z')
                 send_webhook_alert("[!] Boat needs manual docking. Boat is currently stopping.", include_screenshot=True)
-                destination_reached == True
+                destination_reached = True
         else:
             logging.warning("[$] Distance not found in OCR text.")
             send_webhook_alert("[!] ROBLOX possibly crashed.", include_screenshot=True)
