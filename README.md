@@ -84,7 +84,7 @@ Your project might look like this:
 
 - For enhanced results, if you are NOT using AutoSteer, consider positioning your camera below the ship (for more OCR clarity).
 
-- It is generally best practice to AFK in a server in which there are few people and the server's age is minimal.
+- It is generally best practice to get a good multiplier in a older server, then save and go AFK in a server in which the server's age is minimal.
 
 - Setup your webhook in a channel/server with only you, as notifications should be set to all messages, which will ping all with access to the channel!
 
