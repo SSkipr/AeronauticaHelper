@@ -86,7 +86,7 @@ Your project might look like this:
 
 - It is generally best practice to AFK in a server in which there are few people and the server's age is minimal.
 
-- Setup your webhook in a channel/server with only you, as there will be various @everyone pings when major alerts are sent!
+- Setup your webhook in a channel/server with only you, as notifications should be set to all messages, which will ping all with access to the channel!
 
 - Close the chat/player list so others can't mess up your mission!
 
