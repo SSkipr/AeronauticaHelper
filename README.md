@@ -5,7 +5,7 @@ This is an application that watches your AFK boat in Aeronautica! You will get a
 
 ## 🧾 Functionality
 
-As previously stated, the application will recognize the following and send alerts via the designated webhook with a screenshot to better asses the issue:
+As previously stated, the application will recognize the following and send alerts via the designated webhook with a screenshot to better assess the issue:
 - Disconnect from game
 - Boat stops (island collision, out of fuel, etc)
 - Game crashes
@@ -24,19 +24,7 @@ Major alerts, such as the cases above, will include an @everyone ping, while non
 - **Python Version:** 
   Make sure you have Python 3.7 or higher installed. You can download it from [python.org](https://www.python.org/downloads/).
 
-### 2. **Installing Dependencies**
-
-Use pip to install the required libraries. In your terminal or command prompt, run:
-
-```bash
-pip install pyautogui easyocr numpy requests pydirectinput PyQt5
-```
-or
-```bash
-py -m pip install pyautogui easyocr numpy requests pydirectinput PyQt5
-```
-
-### 3. **Setup**
+### 2. **Setup**
 
 - **Webhook URL:**  
   The code sends alerts to a Discord channel using a webhook. Replace the `WEBHOOK_URL` constant in the code with your actual Discord webhook URL:
@@ -45,7 +33,7 @@ py -m pip install pyautogui easyocr numpy requests pydirectinput PyQt5
   ```
   Replace `SHIP_TOP_SPEED` and `MULTIPLIER` with the corresponding speed and turning strength. Customize `CYCLE_INTERVAL` and `LEEWAY` to your desire.
 
-### 4. **Project Structure**
+### 3. **Project Structure**
 
 Your project might look like this:
 ```
@@ -65,7 +53,7 @@ Your project might look like this:
   This log file will be created by the application to store timestamps, OCR output, and any alerts sent.
 
 
-### 5. **Running the Application**
+### 4. **Running the Application**
 
 **Run the Script:**  
    In your terminal or command prompt, navigate to your project directory and run:

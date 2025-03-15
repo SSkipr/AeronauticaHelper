@@ -9,24 +9,64 @@ https://github.com/SSkipr/AeronauticaHelper
 
 '''
 
+# --------------------------------------------------
+# 0. Library setup
+# -------------------------------------------------
+
+# We import this library first as we need to use it to check for the libraries installed by the user.
+import importlib 
+
+# List of non-vanilla libraries (libraries that do not come with Python's base install) that need to be imported.
+# Make sure you put all of these libraries just before section 1 as well so that they can be called later in the program as well.
+
+# (I have included pynput on this list for futureproofing. When macOS update is complete please remove pydirectinput from this list.)
+required_downloads = ['PyQT5', 'pyautogui', 'numpy', 'easyocr', 'pydirectinput', 'pynput']
+
+# Create a dictionary in order to catch any failed imports.
+missing_imports = []
+for library_name in required_downloads:
+    try:
+        importlib.import_module(library_name)
+    except ImportError:
+        missing_imports.append(library_name)
+
+# Check to see if there are any failed imports - if there are any, prompt the user to install them.
+if len(missing_imports) != 0:
+    print("It looks like you don't have the following Python libraries installed:")
+    print(*missing_imports)
+    installMessage = input("These libraries are necessary for running the program. Would you like to install them? (y/n): ")
+    if installMessage.lower() != "y":
+        print("As these libraries are necessary for running the program, the program is unable to continue, and will now exit.")
+        print("If you wish to re-download the libraries, please re-run this program and you will be brought back to the previous dialog.")
+        exit()
+    else:
+        print("Installation in progress - please wait.")
+        for library in missing_imports:
+            subprocess.check_call([sys.executable, "-m", "pip", "install", library])
+
+# Everything is installed, we are ready to go.
+
+# Stock imports
+import subprocess
 import sys
+import time
+import re
+import logging
+import io
+import json
+import threading
+import requests
+import datetime
+
+# Third-party imports
 from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QVBoxLayout, QLineEdit, QLabel
 from PyQt5 import QtCore
 from PyQt5.QtCore import QTimer
 
-import time
-import re
-import logging
 import pyautogui
-import requests
-import numpy as np
+import numpy
 import easyocr
-import io
-import json
-import pydirectinput as direct
-import threading
-import datetime
-import sys
+import pydirectinput
 
 # --------------------------------------------------
 # 1. Configuration and Logging Setup
@@ -80,7 +120,7 @@ def trigger_alert(message, include_screenshot=False):
 # --------------------------------------------------
 def capture_and_process_screenshot():
     screenshot = pyautogui.screenshot()
-    image = np.array(screenshot)
+    image = numpy.array(screenshot)
     results = reader.readtext(image)
     text = " ".join([res[1] for res in results])
     return text
@@ -177,9 +217,9 @@ def run_autosteer(ocr_text):
             return
 
         logging.info(f"[$] AutoSteer - Pressing {key_to_press} for {hold_duration} sec (difference: {diff})")
-        direct.keyDown(key_to_press)
+        pydirectinput.keyDown(key_to_press)
         time.sleep(hold_duration)
-        direct.keyUp(key_to_press)
+        pydirectinput.keyUp(key_to_press)
     else:
         if result is None and current_bearing is None:
             send_webhook_alert("[&] AutoSteer - Target and current bearing not found in OCR text.", include_screenshot=False)
@@ -198,8 +238,8 @@ def run_main_logic(prev_distance, prev_time, start_distance, false_arrival_count
                    cycle_count, start_time, auto_steer_enabled, webhook_logging_enabled,
                    stop_distance, ship_top_speed):
     cycle_count += 1
-    direct.click()
-    direct.press('5')
+    pydirectinput.click()
+    pydirectinput.press('5')
     formatted_time = datetime.datetime.now().strftime("%I:%M:%S %p")
     current_time = time.time()
     ocr_text = capture_and_process_screenshot()
@@ -239,7 +279,7 @@ def run_main_logic(prev_distance, prev_time, start_distance, false_arrival_count
         prev_time = current_time
 
         if current_distance < stop_distance:
-            direct.press('z')
+            pydirectinput.press('z')
             trigger_alert("[!] Boat needs manual docking. Boat is currently stopping.", include_screenshot=True)
             false_arrival_counter += 1
             alert_counter += 1
@@ -251,9 +291,9 @@ def run_main_logic(prev_distance, prev_time, start_distance, false_arrival_count
             if false_arrival_counter >= 1:
                 trigger_alert("[<3] False Arrival detected, Boat is resuming trip.", include_screenshot=False)
                 false_arrival_counter = 0
-                direct.keyDown('w')
+                pydirectinput.keyDown('w')
                 time.sleep(1)
-                direct.keyUp('w')
+                pydirectinput.keyUp('w')
     else:
         logging.warning("[$] Distance not found in OCR text.")
         trigger_alert("[!] ROBLOX possibly crashed.", include_screenshot=True)
