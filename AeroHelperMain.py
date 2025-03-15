@@ -249,7 +249,7 @@ def run_main_logic(prev_distance, prev_time, start_distance, false_arrival_count
                 sys.exit()
         else:
             if false_arrival_counter >= 1:
-                trigger_alert("[<3] False Arrival detected, Boat is resuming trip.", include_screenshot=False)
+                trigger_alert("[</3] False Arrival detected, Boat is resuming trip.", include_screenshot=False)
                 false_arrival_counter = 0
                 direct.keyDown('w')
                 time.sleep(1)
