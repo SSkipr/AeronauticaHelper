@@ -18,9 +18,7 @@ import importlib
 
 # List of non-vanilla libraries (libraries that do not come with Python's base install) that need to be imported.
 # Make sure you put all of these libraries just before section 1 as well so that they can be called later in the program as well.
-
-# (I have included pynput on this list for futureproofing. When macOS update is complete please remove pydirectinput from this list.)
-required_downloads = ['PyQT5', 'pyautogui', 'numpy', 'easyocr', 'pydirectinput', 'pynput']
+required_downloads = ['PyQT5', 'pyautogui', 'numpy', 'easyocr', 'pynput']
 
 # Create a dictionary in order to catch any failed imports.
 missing_imports = []
@@ -66,7 +64,7 @@ from PyQt5.QtCore import QTimer
 import pyautogui
 import numpy
 import easyocr
-import pydirectinput
+import pynput
 
 # --------------------------------------------------
 # 1. Configuration and Logging Setup
@@ -74,9 +72,15 @@ import pydirectinput
 logging.basicConfig(filename='log_data.txt', level=logging.INFO,
                     format='%(asctime)s - %(message)s')
 
-# // Constants: //
-LEEWAY = 0.3                  # Leeway in nautical miles
-MULTIPLIER = 1.9              # Customize to your ship's needs, just make sure it doesnt auscultate
+from pynput.keyboard import Key, Controller as KeyboardController
+from pynput.mouse import Button, Controller as MouseController
+keyboard = KeyboardController()
+mouse = MouseController()
+
+# // Constants (Change these to your liking): //
+
+LEEWAY = 0.3                  # Leeway in nautical miles used for calculating crashes, keep relatively low
+MULTIPLIER = 1.9              # Used for tuning duration, customize to your ship's needs, just make sure it doesnt auscultate
 WEBHOOK_URL = "YOUR_WEBHOOK_URL"
 # // //
 
@@ -85,7 +89,7 @@ consecutive_alerts = 0
 # --------------------------------------------------
 # 2. Initialize EasyOCR Reader
 # --------------------------------------------------
-reader = easyocr.Reader(['en'], gpu=False)  # Set gpu=True if supported
+reader = easyocr.Reader(['en'], gpu=True)
 
 # --------------------------------------------------
 # 3. Webhook Alert Function & Trigger Helper
@@ -217,9 +221,9 @@ def run_autosteer(ocr_text):
             return
 
         logging.info(f"[$] AutoSteer - Pressing {key_to_press} for {hold_duration} sec (difference: {diff})")
-        pydirectinput.keyDown(key_to_press)
+        keyboard.press(key_to_press)
         time.sleep(hold_duration)
-        pydirectinput.keyUp(key_to_press)
+        keyboard.release(key_to_press)
     else:
         if result is None and current_bearing is None:
             send_webhook_alert("[&] AutoSteer - Target and current bearing not found in OCR text.", include_screenshot=False)
@@ -238,8 +242,8 @@ def run_main_logic(prev_distance, prev_time, start_distance, false_arrival_count
                    cycle_count, start_time, auto_steer_enabled, webhook_logging_enabled,
                    stop_distance, ship_top_speed):
     cycle_count += 1
-    pydirectinput.click()
-    pydirectinput.press('5')
+    mouse.click(Button.left)
+    keyboard.type('5')
     formatted_time = datetime.datetime.now().strftime("%I:%M:%S %p")
     current_time = time.time()
     ocr_text = capture_and_process_screenshot()
@@ -271,29 +275,31 @@ def run_main_logic(prev_distance, prev_time, start_distance, false_arrival_count
                 trigger_alert(f"[!] Movement below threshold. Expected at least {threshold:.2f} nm, but moved {movement:.2f} nm.", include_screenshot=True)
                 alert_counter += 1
         else:
-            trigger_alert("[!] Script Start", include_screenshot=False)
-            trigger_alert(f"[?] Script Start time: {formatted_time}", include_screenshot=False)
+            trigger_alert("[!] System Start", include_screenshot=False)
+            trigger_alert(f"[?] System Start time: {formatted_time}", include_screenshot=False)
             start_distance = current_distance
 
         prev_distance = current_distance
         prev_time = current_time
 
         if current_distance < stop_distance:
-            pydirectinput.press('z')
+            keyboard.press("z")
+            time.sleep(0.1)
+            keyboard.release("z")
             trigger_alert("[!] Boat needs manual docking. Boat is currently stopping.", include_screenshot=True)
             false_arrival_counter += 1
             alert_counter += 1
             if false_arrival_counter >= 3:
-                trigger_alert("[!] Boat has stopped, closing script.", include_screenshot=True)
+                trigger_alert("[!] Boat has stopped, closing System.", include_screenshot=True)
                 trigger_alert(f"[!] Total elapsed time: {current_time - start_time:.2f} seconds.", include_screenshot=False)
                 sys.exit()
         else:
             if false_arrival_counter >= 1:
                 trigger_alert("[<3] False Arrival detected, Boat is resuming trip.", include_screenshot=False)
                 false_arrival_counter = 0
-                pydirectinput.keyDown('w')
-                time.sleep(1)
-                pydirectinput.keyUp('w')
+                keyboard.press('w')
+                time.sleep(8)
+                keyboard.release('w')
     else:
         logging.warning("[$] Distance not found in OCR text.")
         trigger_alert("[!] ROBLOX possibly crashed.", include_screenshot=True)
@@ -316,7 +322,7 @@ def run_main_logic(prev_distance, prev_time, start_distance, false_arrival_count
                 logging.error("[&] AutoSteer Webhook error: " + str(e))
 
     if alert_counter >= 5:
-        trigger_alert("@everyone [!] Too many consecutive alerts triggered. Closing script.", include_screenshot=True)
+        trigger_alert("@everyone [!] Too many consecutive alerts triggered. Closing System.", include_screenshot=True)
         sys.exit()
     else:
         if movement is not None and alert_counter > 0 and movement >= threshold:
@@ -325,7 +331,7 @@ def run_main_logic(prev_distance, prev_time, start_distance, false_arrival_count
     return prev_distance, prev_time, start_distance, false_arrival_counter, alert_counter, cycle_count
 
 # --------------------------------------------------
-# 9. PyQt5 GUI with Toggle Buttons
+# 9. PyQt5 GUI with Toggle Buttons and Options
 # --------------------------------------------------
 class AeroHelperApp(QWidget):
     def __init__(self):
@@ -360,19 +366,34 @@ class AeroHelperApp(QWidget):
 
         self.ship_speed_input = QLineEdit(self)
         self.ship_speed_input.setText('20')
-        self.ship_speed_input.setPlaceholderText("0")
-        self.ship_speed_label = QLabel("Vehicle's top speed", self)
+        self.ship_speed_input.setPlaceholderText("Enter vehicle's top speed")
+        self.ship_speed_label = QLabel("Vehicle's Top Speed (nm/h)", self)
 
         self.stop_distance_input = QLineEdit(self)
         self.stop_distance_input.setText('3')
         self.stop_distance_input.setPlaceholderText("1-5 Recommended")
-        self.stop_distance_label = QLabel("Stop distance from destination (nm)", self)
+        self.stop_distance_label = QLabel("Stop Distance from Destination (nm)", self)
 
         self.cycle_interval_input = QLineEdit(self)
         self.cycle_interval_input.setText('1')
         self.cycle_interval_input.setPlaceholderText("1-10 Recommended")
-        self.cycle_interval_label = QLabel("Script Cycle Interval (Minutes)")
+        self.cycle_interval_label = QLabel("System Cycle Interval (Minutes)", self)
 
+        self.leeway_label = QLabel("Leeway (nm)", self)
+        self.leeway_input = QLineEdit(self)
+        self.leeway_input.setText('0.3')
+        self.leeway_input.setPlaceholderText("0.3 Recomended")
+        
+        self.multiplier_label = QLabel("Multiplier", self)
+        self.multiplier_input = QLineEdit(self)
+        self.multiplier_input.setText('1.9')
+        self.multiplier_input.setPlaceholderText("Depends on ship's turning mechanics. Ensure no auscultation")
+        
+        self.webhook_url_label = QLabel("Webhook URL", self)
+        self.webhook_url_input = QLineEdit(self)
+        self.webhook_url_input.setText('YOUR_WEBHOOK_URL') # // If you are using the non-compiled version, edit this to your deafult webhook //
+        self.webhook_url_input.setPlaceholderText("Enter Webhook URL")
+        
         layout = QVBoxLayout(self)
         layout.addWidget(self.start_button)
         layout.addWidget(self.autosteer_button)
@@ -383,8 +404,14 @@ class AeroHelperApp(QWidget):
         layout.addWidget(self.stop_distance_input)
         layout.addWidget(self.cycle_interval_label)
         layout.addWidget(self.cycle_interval_input)
+        layout.addWidget(self.leeway_label)
+        layout.addWidget(self.leeway_input)
+        layout.addWidget(self.multiplier_label)
+        layout.addWidget(self.multiplier_input)
+        layout.addWidget(self.webhook_url_label)
+        layout.addWidget(self.webhook_url_input)
         self.setLayout(layout)
-        self.setGeometry(300, 300, 250, 250)
+        self.setGeometry(300, 300, 300, 400)
         
     def toggle_AutoSteer(self):
         if not self.auto_steer_enabled:
@@ -403,12 +430,17 @@ class AeroHelperApp(QWidget):
             self.webhooknotif_button.setText('Notifications')
     
     def toggle_logic(self):
+        global LEEWAY, MULTIPLIER, WEBHOOK_URL
         self.stop_distance = int(self.stop_distance_input.text())
         if not self.is_running:
             try:
                 self.cycle_interval = int(self.cycle_interval_input.text()) * 60
                 self.ship_top_speed = int(self.ship_speed_input.text())
                 self.stop_distance = int(self.stop_distance_input.text())
+                LEEWAY = float(self.leeway_input.text())
+                MULTIPLIER = float(self.multiplier_input.text())
+                WEBHOOK_URL = self.webhook_url_input.text()
+                
                 self.is_running = True
                 self.start_button.setText('Stop')
                 self.timer.start(self.cycle_interval * 1000)
@@ -416,8 +448,12 @@ class AeroHelperApp(QWidget):
                 self.cycle_interval_input.setDisabled(True)
                 self.ship_speed_input.setDisabled(True)
                 self.stop_distance_input.setDisabled(True)
+                self.leeway_input.setDisabled(True)
+                self.multiplier_input.setDisabled(True)
+                self.webhook_url_input.setDisabled(True)
                 time.sleep(1)
-            except:
+            except Exception as e:
+                logging.error("Error starting AeroHelper: " + str(e))
                 self.is_running = False
         else:
             self.is_running = False
@@ -427,6 +463,9 @@ class AeroHelperApp(QWidget):
             self.cycle_interval_input.setDisabled(False)
             self.ship_speed_input.setDisabled(False)
             self.stop_distance_input.setDisabled(False)
+            self.leeway_input.setDisabled(False)
+            self.multiplier_input.setDisabled(False)
+            self.webhook_url_input.setDisabled(False)
 
     def run_AeroHelper_Logic(self):
         if self.is_running:
