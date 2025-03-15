@@ -23,7 +23,7 @@ import numpy as np
 import easyocr
 import io
 import json
-import pydirectinput as direct
+import pynput
 import threading
 import datetime
 import sys
@@ -34,9 +34,14 @@ import sys
 logging.basicConfig(filename='log_data.txt', level=logging.INFO,
                     format='%(asctime)s - %(message)s')
 
+from pynput.keyboard import Key, Controller as KeyboardController
+from pynput.mouse import Button, Controller as MouseController
+keyboard = KeyboardController()
+mouse = MouseController()
+
 # // Constants: //
-LEEWAY = 0.3                  # Leeway in nautical miles
-MULTIPLIER = 1.9              # Customize to your ship's needs, just make sure it doesnt auscultate
+LEEWAY = 0.3                  # Leeway in nautical miles used for calculating crashes, keep relatively low
+MULTIPLIER = 1.9              # Used for tuning duration, customize to your ship's needs, just make sure it doesnt auscultate
 WEBHOOK_URL = "YOUR_WEBHOOK_URL"
 # // //
 
@@ -177,9 +182,9 @@ def run_autosteer(ocr_text):
             return
 
         logging.info(f"[$] AutoSteer - Pressing {key_to_press} for {hold_duration} sec (difference: {diff})")
-        direct.keyDown(key_to_press)
+        keyboard.press(key_to_press)
         time.sleep(hold_duration)
-        direct.keyUp(key_to_press)
+        keyboard.release(key_to_press)
     else:
         if result is None and current_bearing is None:
             send_webhook_alert("[&] AutoSteer - Target and current bearing not found in OCR text.", include_screenshot=False)
@@ -198,8 +203,7 @@ def run_main_logic(prev_distance, prev_time, start_distance, false_arrival_count
                    cycle_count, start_time, auto_steer_enabled, webhook_logging_enabled,
                    stop_distance, ship_top_speed):
     cycle_count += 1
-    direct.click()
-    direct.press('5')
+    mouse.click(Button.left)
     formatted_time = datetime.datetime.now().strftime("%I:%M:%S %p")
     current_time = time.time()
     ocr_text = capture_and_process_screenshot()
@@ -239,7 +243,9 @@ def run_main_logic(prev_distance, prev_time, start_distance, false_arrival_count
         prev_time = current_time
 
         if current_distance < stop_distance:
-            direct.press('z')
+            keyboard.press("z")
+            time.sleep(0.1)
+            keyboard.release("z")
             trigger_alert("[!] Boat needs manual docking. Boat is currently stopping.", include_screenshot=True)
             false_arrival_counter += 1
             alert_counter += 1
@@ -251,9 +257,9 @@ def run_main_logic(prev_distance, prev_time, start_distance, false_arrival_count
             if false_arrival_counter >= 1:
                 trigger_alert("[<3] False Arrival detected, Boat is resuming trip.", include_screenshot=False)
                 false_arrival_counter = 0
-                direct.keyDown('w')
-                time.sleep(1)
-                direct.keyUp('w')
+                keyboard.press('w')
+                time.sleep(8)
+                keyboard.release('w')
     else:
         logging.warning("[$] Distance not found in OCR text.")
         trigger_alert("[!] ROBLOX possibly crashed.", include_screenshot=True)
