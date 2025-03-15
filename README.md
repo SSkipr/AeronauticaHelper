@@ -36,16 +36,7 @@ or
 py -m pip install pyautogui easyocr numpy requests pynput PyQt5
 ```
 
-### 3. **Setup**
-
-- **Webhook URL:**  
-  The code sends alerts to a Discord channel using a webhook. Replace the `WEBHOOK_URL` constant in the code with your actual Discord webhook URL:
-  ```python
-  WEBHOOK_URL = "https://discord.com/api/webhooks/your_webhook_id/your_webhook_token"
-  ```
-  Replace `MULTIPLIER` with the corresponding turning strength. Customize `LEEWAY` to your desire.
-
-### 4. **Project Structure**
+### 3. **Project Structure**
 
 Your project might look like this:
 ```
@@ -65,9 +56,9 @@ Your project might look like this:
   This log file will be created by the application to store timestamps, OCR output, and any alerts sent.
 
 
-### 5. **Running the Application**
+### 4. **Running the Application**
 
-**Run the Script:**  
+**Run the Code:**  
    In your terminal or command prompt, navigate to your project directory and run:
    ```bash
    python AeroHelperMain.py
@@ -80,7 +71,7 @@ Your project might look like this:
 ## ☝️ Please Note:
 - **If you ARE using AutoSteer, consider turning ROBLOX's Graphics Quality to the LOWEST option, as this makes the water's color more consistent (for whatever reason), leading to enhanced OCR clarity.**
 
-- **If you ARE using Autosteer, you MUST use camera 5**
+- **If you ARE using Autosteer, you MUST use camera 5.**
 
 - For enhanced results, if you are NOT using AutoSteer, consider positioning your camera below the ship (for more OCR clarity).
 
@@ -90,15 +81,21 @@ Your project might look like this:
 
 - Close the chat/player list so others can't mess up your mission!
 
-- Some boats turn quicker than others (though it may take longer); they will all reach the target. Customize the `MULTIPLIER` to your ship's liking, just make sure it doesnt auscultate.
+- Some boats turn quicker than others (though it may take longer); they will all reach the target. Customize the `MULTIPLIER` to your ship's liking; ensure it doesn't auscultate.
 
-- If you enjoy our script, please ⭐ and 👁️ the repo!
+- If you enjoy our code, please ⭐ and 👁️ the repo!
 
 ---
 
-## 🗣️ Latest Version: 2.1
+## 🗣️ Latest Version: 2.3
 
-This version includes a UI, and various QoL improvements. Enjoy!
+- [Compiled Version](https://github.com/SSkipr/AeronauticaHelper/releases)
+
+- UI
+
+- QoL Improvements
+
+Enjoy!
 
 ---
 
@@ -114,5 +111,5 @@ This version includes a UI, and various QoL improvements. Enjoy!
 
 ---
 
-# THIS SCRIPT HAS BEEN CLEARED WITH AERONAUTICA STAFF. THIS IS 100% SAFE TO USE.
+# THIS CODE HAS BEEN CLEARED WITH AERONAUTICA STAFF. THIS IS 100% SAFE TO USE.
 ![AeroHelperV2Approved](https://github.com/user-attachments/assets/0778f8ec-c958-479e-938d-5bea5166b56b)
