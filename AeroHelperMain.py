@@ -77,13 +77,6 @@ from pynput.mouse import Button, Controller as MouseController
 keyboard = KeyboardController()
 mouse = MouseController()
 
-# // Constants (Change these to your liking): //
-
-LEEWAY = 0.3                  # Leeway in nautical miles used for calculating crashes, keep relatively low
-MULTIPLIER = 1.9              # Used for tuning duration, customize to your ship's needs, just make sure it doesnt auscultate
-WEBHOOK_URL = "YOUR_WEBHOOK_URL"
-# // //
-
 consecutive_alerts = 0
 
 # --------------------------------------------------
