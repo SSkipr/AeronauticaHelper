@@ -21,6 +21,8 @@ Thank you for your interest in contributing to AeronauticaHelper! We welcome con
 - **Collaboration:** Engage in discussions to clarify and improve changes.
 - **Iterate:** Maintain your pull request until it is reviewed and merged by the maintainers.
 
+### Please Rerember to reamin somewhat professional.
+
 ### [The Team](https://github.com/SSkipr/AeronauticaHelper/graphs/contributors) preserves the right to decline any PR for any reason.
 
 Thank you for your contributions and for helping to make AeronauticaHelper a better project!
