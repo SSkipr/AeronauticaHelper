@@ -29,7 +29,9 @@ If you are not using the [compiled version](https://github.com/SSkipr/Aeronautic
 
 ### 2. **Installing Dependencies**
 
-Use pip to install the required libraries. In your terminal or command prompt, run:
+Normally, the program will install any required libraries for you upon first launch. However, if you want to install the libraries yourself, please follow the instructions below.
+
+In your terminal or command prompt, run:
 
 ```bash
 pip install pyautogui easyocr numpy requests pynupt PyQt5
