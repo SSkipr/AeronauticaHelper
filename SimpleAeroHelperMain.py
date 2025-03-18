@@ -14,6 +14,7 @@
                                | |                     
                                |_|                     
 Version: 1 (simple)
+ChatGPT Was used for the regex stuff here, sorry if it isn't great - Person 12
 '''
 
 
@@ -44,9 +45,10 @@ mouse = MouseController()
 
 
 # Constants:
-CYCLE_INTERVAL = 15       # Cycle interval in seconds (must be within 1m-19m and factor of 60, 1m is recomended)
-STOP_DISTANCE = 5 # Stop distance in your selected (ingame) units
+CYCLE_INTERVAL = 60       # Cycle interval in seconds (must be within 1m-19m and factor of 60, 1m is recomended)
+STOP_DISTANCE = 3 # Stop distance in your units selected ingame
 WEBHOOK_INTERVAL = 30 * 60 # Webhook interval in seconds, set to 10m minimum
+STEERING_MULTIPLIER = 1.5 # Steering multiplier, keep close to 1 and don't exceed 3. Use bigger multipliers for slower-turning ships
 WEBHOOK_URL = "https://discord.com/api/webhooks/1349420294590435438/qwXHKrXUB49xsxvC9G4y2R3QjAwY6Q6C-oe9gac02ZX5tGt2tFiZ4-lqH3184cSx9raf" # your webhook URL for updates
 
 # --------------------------------------------------
@@ -75,8 +77,104 @@ def send_webhook_alert(message):
 # --------------------------------------------------
 # 4. Screenshot Capture and OCR Processing
 # --------------------------------------------------
-def capture_and_process_screenshot():
-    screen_width, screen_height = pyautogui.size() # Define the regions for screenshot capture
+def capture_and_process_screenshot(regions):
+
+    screenshots = [pyautogui.screenshot(region=region) for region in regions] # take screenshots in the regions specified when starting the program
+
+    text = [] # define the text variable
+
+    for screenshot in screenshots: # for every screenshot:
+        image = np.array(screenshot)
+        results = reader.readtext(image) # read the text in screenshot
+        text.append(" ".join([res[1] for res in results])) # add the text to the text variable
+    return str(text) # return the text variable (list) as a string
+
+# --------------------------------------------------
+# 5. Extracting the Distance Value
+# --------------------------------------------------
+def extract_distance(ocr_text): 
+    
+    text = ocr_text
+
+    matches = re.findall(r"\b\d+\b", text)  # Find all numbers
+
+    if len(matches) == 3: #If there are 3 nums (sometimes distance wasn't showing)
+        second_number = int(matches[1])  # Get the second number
+        return second_number  # Returns the second number (distance)
+    else: # If there aren't 3 nums (distance occasionally didn't show)
+       return None # returns nothing
+
+# --------------------------------------------------
+# 6. Extract Bearing Values for AutoSteer
+# --------------------------------------------------
+def extract_target_bearing(ocr_text):
+
+    text = ocr_text
+
+    match = re.search(r"\b\d+\b", text)  # Find the first number
+
+    if match:
+        first_number = int(match.group())  # Convert to an integer if needed
+        return first_number  # Returns the first number (Dest Heading)
+        
+
+def extract_current_bearing(ocr_text):
+    
+    text = ocr_text
+
+    match = re.search(r"\b(\d+)\b(?!.*\b\d+\b)", text)  # Find the last number
+
+    if match:
+        last_number = int(match.group(1))  # Extract the last number
+        return last_number # Returns the third number (TRK)
+
+# --------------------------------------------------
+# 7. AutoSteer Function (runs in a separate thread)
+# --------------------------------------------------
+def run_autosteer(ocr_text):
+    target = extract_target_bearing(ocr_text) # get target bearing
+    current_bearing = extract_current_bearing(ocr_text) # get current bearing
+    if target is not None and current_bearing is not None: # if we get numbers for both bearings
+        logging.info(f"[&] AutoSteer - Target Bearing: {target}, Current Bearing: {current_bearing}") #logs current and target bearings
+        diff = abs(current_bearing - target)
+        if target < current_bearing: # find direction needed to turn and set that to key_to_press
+            key_to_press = 'a'
+        elif target > current_bearing:
+            key_to_press = 'd'
+        else:
+            logging.info("[&] AutoSteer - No difference in bearing, no steering required.") # logging
+            return
+
+        if diff > 11:
+            hold_duration = 3
+        elif 6 <= diff <= 10:
+            hold_duration = 2
+        elif 3 <= diff <= 5:
+            hold_duration = 1
+        elif 1 <= diff < 3:
+            hold_duration = 0.75
+        else:
+            logging.info("[&] AutoSteer - Difference too small, no steering adjustment needed.") # logging
+            return
+        
+        hold_duration = hold_duration * STEERING_MULTIPLIER # multiply the hold duration by the steering multiplier
+
+        logging.info(f"[&] AutoSteer - Pressing {key_to_press} for {hold_duration} sec (difference: {diff})") #log what direction + how long autosteer is being used for
+        keyboard.press(key_to_press)
+        time.sleep(hold_duration)
+        keyboard.release(key_to_press)
+        time.sleep(3)
+    else:
+        logging.warning("[&] AutoSteer - Target or current bearing not found in OCR text.") # if one of the bearings is none, then we log the error
+
+# --------------------------------------------------
+# 8. Main Application Logic
+# --------------------------------------------------
+def main():
+
+    screen_width, screen_height = pyautogui.size() # Find the screen width and height for region finding below
+
+    # Region finding, used to capture screenshots later:
 
     if screen_height == 2160: # If 4k:
         regions = [
@@ -101,92 +199,8 @@ def capture_and_process_screenshot():
     else: # If not on any of the supported resolutions:
         print("You're not on a supported resolution, the supported resolutions are: 4k, 1440p, 1080p and 720p. Please rerun this program when you have one of those resolutions selected") 
         exit() # Close the program
-    screenshots = [pyautogui.screenshot(region=region) for region in regions]
-    text = []
-    for screenshot in screenshots:
-        image = np.array(screenshot)
-        results = reader.readtext(image)
-        text.append(" ".join([res[1] for res in results]))
-    return str(text)
 
-# --------------------------------------------------
-# 5. Extracting the Distance Value
-# --------------------------------------------------
-def extract_distance(ocr_text): 
     
-    text = ocr_text
-
-    matches = re.findall(r"\b\d+\b", text)  # Find all numbers
-
-    if len(matches) == 2: #If there are 2 nums (sometimes distance wasn't showing)
-        second_number = int(matches[1])  # Get the second number
-        return second_number  # Returns the second number (distance)
-# --------------------------------------------------
-# 6. Extract Bearing Values for AutoSteer
-# --------------------------------------------------
-def extract_target_bearing(ocr_text):
-
-    text = ocr_text
-
-    match = re.search(r"\b\d+\b", text)  # Find the first standalone number
-
-    if match:
-        first_number = int(match.group())  # Convert to an integer if needed
-        return first_number  # Returns the first number (Dest Heading)
-        
-
-def extract_current_bearing(ocr_text):
-    
-    text = ocr_text
-
-    match = re.search(r"\b(\d+)\b(?!.*\b\d+\b)", text)  # Find the last number
-
-    if match:
-        last_number = int(match.group(1))  # Extract the last number
-        return last_number # Returns the third number (TRK)
-
-# --------------------------------------------------
-# 7. AutoSteer Function (runs in a separate thread)
-# --------------------------------------------------
-def run_autosteer(ocr_text):
-    target = extract_target_bearing(ocr_text)
-    current_bearing = extract_current_bearing(ocr_text)
-    if target is not None and current_bearing is not None:
-        logging.info(f"[&] AutoSteer - Target Bearing: {target}, Current Bearing: {current_bearing}")
-        diff = abs(current_bearing - target)
-        if target < current_bearing:
-            key_to_press = 'a'
-        elif target > current_bearing:
-            key_to_press = 'd'
-        else:
-            logging.info("[&] AutoSteer - No difference in bearing, no steering required.")
-            return
-
-        if diff > 11:
-            hold_duration = 3
-        elif 6 <= diff <= 10:
-            hold_duration = 2
-        elif 3 <= diff <= 5:
-            hold_duration = 1
-        elif 1 <= diff < 3:
-            hold_duration = 0.75
-        else:
-            logging.info("[&] AutoSteer - Difference too small, no steering adjustment needed.")
-            return
-
-        logging.info(f"[&] AutoSteer - Pressing {key_to_press} for {hold_duration} sec (difference: {diff})")
-        keyboard.press(key_to_press)
-        time.sleep(hold_duration)
-        keyboard.release(key_to_press)
-        time.sleep(3)
-    else:
-        logging.warning("[&] AutoSteer - Target or current bearing not found in OCR text.")
-
-# --------------------------------------------------
-# 8. Main Application Logic
-# --------------------------------------------------
-def main():
-    cycle = 0
     print("Aeronautica Helper v2")
     time.sleep(1)
     print("Navigate to the ROBLOX tab, you have 10 seconds before the program starts")
@@ -199,16 +213,17 @@ def main():
     while True:
         mouse.click(Button.left)
 
-        ocr_text = capture_and_process_screenshot()
+        ocr_text = capture_and_process_screenshot(regions) # capture screenshot with regions found earlier
 
         logging.info("[$] OCR text: " + ocr_text)
             
         threading.Thread(target=run_autosteer, args=(ocr_text,)).start()
 
-        target_dist = extract_distance(ocr_text) # Extract target distance
+        target_dist= extract_distance(ocr_text) # Extract target distance
 
         if target_dist != None: # If there is a target distance
-            if extract_distance(ocr_text) < STOP_DISTANCE: # If current distance is less than stop distance
+            target_dist = int(target_dist)
+            if extract_distance(ocr_text) <= STOP_DISTANCE: # If current distance is less than or equal to stop distance
                 keyboard.press("z") #press z for 0.1 sec to stop boat
                 time.sleep(0.1)
                 keyboard.release("z")
