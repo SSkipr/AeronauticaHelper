@@ -1,3 +1,6 @@
+# This is the Next-Version branch, meaning this code is often *incomplete, obsolete, or unsafe* to use. Please head to the [main branch](https://github.com/SSkipr/AeronauticaHelper) unless you plan to contribute to this project.
+
+
 # 👉 AeronauticaHelper Setup 👈
 This is an application that watches your AFK boat in Aeronautica! You will get a notification via the webhook if the game crashes, if you disconnect, or if your boat suddenly stops (island collision, out of fuel, etc), accompanied by a screenshot. Though possible, errors occur minimally when the camera is positioned properly. **Version 2 introduces AutoSteer** and built-in Anti-AFK.
 
