@@ -49,7 +49,7 @@ CYCLE_INTERVAL = 60       # Cycle interval in seconds (must be within 1m-19m and
 STOP_DISTANCE = 3 # Stop distance in your units selected ingame
 WEBHOOK_INTERVAL = 30 * 60 # Webhook interval in seconds, set to 10m minimum
 STEERING_MULTIPLIER = 1.5 # Steering multiplier, keep close to 1 and don't exceed 3. Use bigger multipliers for slower-turning ships
-WEBHOOK_URL = "https://discord.com/api/webhooks/1349420294590435438/qwXHKrXUB49xsxvC9G4y2R3QjAwY6Q6C-oe9gac02ZX5tGt2tFiZ4-lqH3184cSx9raf" # your webhook URL for updates
+WEBHOOK_URL = "YOUR_WEBHOOK_URL" # your webhook URL for updates
 
 # --------------------------------------------------
 # 2. Initialize EasyOCR Reader
