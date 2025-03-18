@@ -7,11 +7,16 @@ This is an application that watches your AFK boat in Aeronautica! You will get a
 
 As previously stated, the application will recognize the following and send alerts via the designated webhook with a screenshot every 30mins (time can be changed) and stop the boat when it is within a certain distance from the destination (can be changed)
 
+
 **AutoSteer** gets the current bearing and matches it to the destination. Automated keystrokes are then performed to adjust accordingly.⭐**Essentially, assuming everything works properly, you will pull out your ship to open sea and come back when you when you see it has reached the destination.**
+
 
 ---
 
-## Installation:
+## 🪟🍎 Installation
+
+**This code is supported by both Windows and MacOS!**
+If you are not using the [compiled version](https://github.com/SSkipr/AeronauticaHelper/releases), you must follow the instructions below (if you have previous Python experience, feel free to skip around):
 
 ### 1. **Python Environment**
 
@@ -36,6 +41,7 @@ Your project might look like this:
 /AeronauticaHelper
 ├── SimpleAeroHelperMain.py    # Contains the application code
 ├── log_data.txt         # Log file created by the application
+├── LICENSE.md           # Repo's license
 └── README.md            # (Optional) Documentation for your project
 ```
 
@@ -72,17 +78,21 @@ Your project might look like this:
    python AeroHelperMain.py
    ```
 
-   You can also open in a code editor (such as vscode or pycharm) and run it there
+   You can also open it in a code editor (such as VS code or Pycharm) and run it there
 
   ---
 
+
 ## ☝️ Please Note:
 
-- It is generally best practice to get a good multiplier in a older server, then save and go AFK in a server in which the server's age is minimal.
 
-- Setup your webhook in a channel/server with only you, as notifications should be set to all messages, which will ping all with access to the channel!
+- It is generally best practice to get a good multiplier in an older server, then save and go AFK in a server in which the server's age is minimal.
+
+- Set up your webhook in a channel/server with only you, as notifications should be set to all messages, which will ping all with access to the channel!
 
 - Some boats turn quicker than others (though it may take longer); they will all reach the target. Customize the `TURNING_MULTIPLIER` to your ship's liking; ensure it doesn't auscultate (go back and forth).
+
+- The script is setup to use the deafult keybinds: A, D, and Z.
 
 - If you enjoy our code, please ⭐ and 👁️ the repo!
 
@@ -90,11 +100,14 @@ Your project might look like this:
 
 ## 🗣️ Latest Version: 1.0
 
+
 Enjoy!
 
 ---
 
+
 ### Questions or concerns? [DM me on Discord!](https://discord.gg/3adphMca)
+
 
 ---
 
