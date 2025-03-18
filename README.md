@@ -77,7 +77,6 @@ Your project might look like this:
   ---
 
 ## ☝️ Please Note:
-- **If you ARE using AutoSteer, consider turning ROBLOX's Graphics Quality to the LOWEST option, as this makes the water's color more consistent (for whatever reason), leading to enhanced OCR clarity.**
 
 - It is generally best practice to get a good multiplier in a older server, then save and go AFK in a server in which the server's age is minimal.
 
