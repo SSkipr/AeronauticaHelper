@@ -1,5 +1,5 @@
-# 👉 AeronauticaHelper Setup 👈
-This is an application that watches your AFK boat in Aeronautica! You will get a status update with a screenshot via the webhook every 30mins (time can be changed). There is built-in Anti-AFK.
+# 👉 Simple AeronauticaHelper Setup 👈
+A simpler version of the [main code](https://github.com/SSkipr/AeronauticaHelper/tree/Complex) which is an application that watches your AFK boat in Aeronautica! You will get a status update with a screenshot via the webhook every 30 minutes (time can be changed). There is built-in Anti-AFK.
 
 ---
 
@@ -8,7 +8,7 @@ This is an application that watches your AFK boat in Aeronautica! You will get a
 As previously stated, the application will recognize the following and send alerts via the designated webhook with a screenshot every 30mins (time can be changed) and stop the boat when it is within a certain distance from the destination (can be changed)
 
 
-**AutoSteer** gets the current bearing and matches it to the destination. Automated keystrokes are then performed to adjust accordingly.⭐**Essentially, assuming everything works properly, you will pull out your ship to open sea and come back when you when you see it has reached the destination.**
+**AutoSteer** gets the current bearing and matches it to the destination. Automated keystrokes are then performed to adjust accordingly.⭐**Essentially, assuming everything works properly, you will pull out your ship to open sea and come back when you see your ship has reached the destination via the webhook**
 
 
 ---
@@ -16,7 +16,6 @@ As previously stated, the application will recognize the following and send aler
 ## 🪟🍎 Installation
 
 **This code is supported by both Windows and MacOS!**
-If you are not using the [compiled version](https://github.com/SSkipr/AeronauticaHelper/releases), you must follow the instructions below (if you have previous Python experience, feel free to skip around):
 
 ### 1. **Python Environment**
 
@@ -29,6 +28,7 @@ Use pip to install the required libraries. In your terminal or command prompt, r
 
 ```bash
 pip install pyautogui easyocr numpy requests pynupt
+```
 or
 ```bash
 py -m pip install pyautogui easyocr numpy requests pynput
@@ -40,9 +40,9 @@ Your project might look like this:
 ```
 /AeronauticaHelper
 ├── SimpleAeroHelperMain.py    # Contains the application code
-├── log_data.txt         # Log file created by the application
-├── LICENSE.md           # Repo's license
-└── README.md            # (Optional) Documentation for your project
+├── log_data.txt               # Log file created by the application
+├── LICENSE.md                 # Repo's license
+└── README.md                  # (Optional) Documentation for your project
 ```
 
 - **SimpleAeroHelperMain.py:**  
@@ -59,15 +59,15 @@ Your project might look like this:
 
   **Configure settings to your liking in the code (under configuration and logging setup)**
 
-  - CYCLE_INTERVAL  (Cycle interval in seconds. 15-120 secs is recommended)
+  - ``CYCLE_INTERVAL``  (Cycle interval in seconds. 15-120 secs is recommended)
 
-  - STOP_DISTANCE  (Stop distance in your units selected ingame)
+  - ``STOP_DISTANCE``  (Stop distance in your units selected ingame)
 
-  - WEBHOOK_INTERVAL  (Webhook interval in seconds, set to 10m minimum)
+  - ``WEBHOOK_INTERVAL``  (Webhook interval in seconds, set to 10m minimum)
 
-  - STEERING_MULTIPLIER  (Steering multiplier, keep close to 1 and don't exceed 3. Use bigger multipliers for slower-turning ships)
+  - ``STEERING_MULTIPLIER`` (Steering multiplier, keep close to 1 and don't exceed 3. Use bigger multipliers for slower-turning ships)
 
-  - WEBHOOK_URL  (your webhook URL for updates)
+  - ``WEBHOOK_URL``  (your webhook URL for updates)
 
 
 ### 5. **Running the Application**
@@ -75,10 +75,10 @@ Your project might look like this:
 **Run the Code:**  
    In your terminal or command prompt, navigate to your project directory and run:
    ```bash
-   python AeroHelperMain.py
+   python SimpleAeroHelperMain.py
    ```
 
-   You can also open it in a code editor (such as VS code or Pycharm) and run it there
+   You can also open it in a code editor (such as VS Code or Pycharm) and run it there
 
   ---
 
@@ -92,14 +92,13 @@ Your project might look like this:
 
 - Some boats turn quicker than others (though it may take longer); they will all reach the target. Customize the `TURNING_MULTIPLIER` to your ship's liking; ensure it doesn't auscultate (go back and forth).
 
-- The script is setup to use the deafult keybinds: A, D, and Z.
+- The script is set up to use the default key binds: A, D, and Z.
 
 - If you enjoy our code, please ⭐ and 👁️ the repo!
 
 ---
 
 ## 🗣️ Latest Version: 1.0
-
 
 Enjoy!
 
