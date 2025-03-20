@@ -16,11 +16,11 @@ As previously stated, the application will recognize the following and send aler
 
 Major alerts, such as the cases above, will include an @everyone ping, while non-major alerts will not receive one.
 
-**AutoSteer** gets the current bearing and matches it to the destination. Automated keystrokes are then performed to adjust accordingly.⭐**Essentially, assuming everything works properly, you will pull out your ship to open sea and come back when you get a notification.**
+**AutoSteer** gets the current bearing and matches it to the destination. Automated keystrokes are then performed to adjust accordingly.⭐**Essentially, assuming everything works properly, you will pull out your ship to the open sea and come back when you get a notification.**
 
 ---
 
-## 🪟🍎 Installation:
+## 🪟🍎 Installation
 
 **This code is supported by both Windows and MacOS!**
 If you are not using the [compiled version](https://github.com/SSkipr/AeronauticaHelper/releases), you must follow the instructions below (if you have previous Python experience, feel free to skip around):
@@ -32,7 +32,9 @@ If you are not using the [compiled version](https://github.com/SSkipr/Aeronautic
 
 ### 2. **Installing Dependencies**
 
-Use pip to install the required libraries. In your terminal or command prompt, run:
+Normally, the program will install any required libraries for you upon first launch. However, if you want to install the libraries yourself, please follow the instructions below.
+
+In your terminal or command prompt, run:
 
 ```bash
 pip install pyautogui easyocr numpy requests pynupt PyQt5
@@ -71,24 +73,27 @@ Your project might look like this:
    python AeroHelperMain.py
    ```
 
-   You can also open in a code editor (such as vscode or pycharm) and run it there
+   You can also open it in a code editor (such as VS code or Pycharm) and run it there
 
   ---
 
-## ☝️ Please Note:
-- **If you ARE using AutoSteer, consider turning ROBLOX's Graphics Quality to the LOWEST option, as this makes the water's color more consistent (for whatever reason), leading to enhanced OCR clarity.**
+## ☝️ Please Note
 
-- **If you ARE using Autosteer, you MUST use camera 5.**
+- For enhanced (OCR) results, consider doing the following:
+    - If you ARE using Autosteer, you MUST use camera 5.
+    - If you are NOT using AutoSteer, consider positioning your camera below the ship (for more OCR clarity).
+    - Turn ROBLOX's Graphics Quality to the LOWEST option, as this makes the water's color more consistent (for whatever reason), leading to enhanced OCR clarity.
+    - Set Aeronautica's in-game 'User Interface Scale' to MAX (2).
 
-- For enhanced results, if you are NOT using AutoSteer, consider positioning your camera below the ship (for more OCR clarity).
+- It is generally best practice to get a good multiplier in an older server, then save and go AFK in a server in which the server's age is minimal.
 
-- It is generally best practice to get a good multiplier in a older server, then save and go AFK in a server in which the server's age is minimal.
-
-- Setup your webhook in a channel/server with only you, as notifications should be set to all messages, which will ping all with access to the channel!
+- Set up your webhook in a channel/server with only you, as notifications should be set to all messages, which will ping all with access to the channel!
 
 - Close the chat/player list so others can't mess up your mission!
 
 - Some boats turn quicker than others (though it may take longer); they will all reach the target. Customize the `MULTIPLIER` to your ship's liking; ensure it doesn't auscultate.
+
+- The script is setup to use the deafult keybinds: A, D, and Z.
 
 - If you enjoy our code, please ⭐ and 👁️ the repo!
 
@@ -108,7 +113,7 @@ Enjoy!
 
 ---
 
-## 📈 Upcoming Features:
+## 📈 Upcoming Features
 
 - Full AutoPilot (v3)?
 
@@ -116,7 +121,7 @@ Enjoy!
 
 ---
 
-### Questions or concerns? [DM me on Discord!](https://discord.gg/3adphMca)
+### Questions or concerns? [DM me on Discord @sskipr](https://discord.gg/3adphMca)
 
 ---
 
