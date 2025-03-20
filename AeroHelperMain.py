@@ -13,14 +13,10 @@ https://github.com/SSkipr/AeronauticaHelper
 # 0. Library setup
 # -------------------------------------------------
 
-# Import the "importlib" library, as we need to use it to check for the libraries installed by the user.
 import importlib 
 
-# List of non-vanilla libraries (libraries that do not come with Python's base install) that need to be imported.
-# Make sure you put all of these libraries just before section 1 as well so that they can be called later in the program as well.
 required_downloads = ['PyQt5', 'pyautogui', 'numpy', 'easyocr', 'pynput']
 
-# Create a dictionary in order to catch any failed imports.
 missing_imports = []
 for library_name in required_downloads:
     try:
@@ -28,23 +24,9 @@ for library_name in required_downloads:
     except ImportError:
         missing_imports.append(library_name)
 
-# Check to see if there are any failed imports - if there are any, prompt the user to install them.
 if len(missing_imports) != 0:
-    # Unused CLI text - this can be re-enabled in the future if necessary.
-
-    # print("It looks like you don't have the following Python libraries installed:")
-    # print(*missing_imports)
-    # installMessage = input("These libraries are necessary for running the program. Would you like to install them? (y/n): ")
-    # if installMessage.lower() != "y":
-    #     print("As these libraries are necessary for running the program, the program is unable to continue, and will now exit.")
-    #     print("If you wish to re-download the libraries, please re-run this program and you will be brought back to the previous dialog.")
-    #     exit()
-    # else:
-    #     print("Installation in progress - please wait.")
         for library in missing_imports:
             subprocess.check_call([sys.executable, "-m", "pip", "install", library])
-
-# Everything is installed, we are ready to go.
 
 # Stock imports
 import subprocess
@@ -58,7 +40,7 @@ import threading
 import requests
 import datetime
 
-# Third-party imports
+
 from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QVBoxLayout, QLineEdit, QLabel
 from PyQt5 import QtCore
 from PyQt5.QtCore import QTimer
