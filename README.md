@@ -32,7 +32,7 @@ If you are not using the [compiled version](https://github.com/SSkipr/Aeronautic
 
 ### 2. **Installing Dependencies**
 
-Normally, the program will install any required libraries for you upon first launch. However, if you want to install the libraries yourself, please follow the instructions below.
+**Normally, the program will install any required libraries for you upon first launch.** However, if you want to install the libraries yourself, please follow the instructions below.
 
 In your terminal or command prompt, run:
 
@@ -52,7 +52,7 @@ Your project might look like this:
 ├── AeroHelperMain.py    # Contains the application code
 ├── log_data.txt         # Log file created by the application
 ├── LICENSE.md           # Repo's license
-└── README.md            # (Optional) Documentation for your project
+└── README.md            # (Optional) Documentation
 ```
 
 - **AeroHelperMain.py:**  
@@ -73,7 +73,7 @@ Your project might look like this:
    python AeroHelperMain.py
    ```
 
-   You can also open it in a code editor (such as VS code or Pycharm) and run it there
+   You can also open it in a code editor (such as VS Code) and run it there.
 
   ---
 
@@ -99,7 +99,9 @@ Your project might look like this:
 
 ---
 
-## 🗣️ Latest Version: 2.3
+## 🗣️ Latest Version: 2.4
+
+- Installation Assistant
 
 - [Compiled Version](https://github.com/SSkipr/AeronauticaHelper/releases)
 
