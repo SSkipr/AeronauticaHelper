@@ -72,6 +72,10 @@ Your project might look like this:
    ```bash
    python AeroHelperMain.py
    ```
+  or
+   ```
+   py -m python AeroHeperMain.py
+   ```
 
    You can also open it in a code editor (such as VS Code) and run it there.
 
