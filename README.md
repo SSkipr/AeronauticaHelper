@@ -2,7 +2,7 @@
 
 
 # 👉 AeronauticaHelper Setup 👈
-This is an application that watches your AFK boat in Aeronautica! You will get a notification via the webhook if the game crashes, if you disconnect, or if your boat suddenly stops (island collision, out of fuel, etc), accompanied by a screenshot. Though possible, errors occur minimally when the camera is positioned properly. **Version 2 introduces AutoSteer** and built-in Anti-AFK.
+This is an application that watches your AFK boat in Aeronautica! You will get a notification via the webhook if the game crashes, if you disconnect, or if your boat suddenly stops (island collision, out of fuel, etc), accompanied by a screenshot.
 
 ---
 
@@ -16,7 +16,7 @@ As previously stated, the application will recognize the following and send aler
 
 Urgent alerts, such as the cases above, will include an @everyone ping, while (non-urgent) alerts will not receive a ping. You can disable regular, non-urgent alerts in the application.
 
-**AutoSteer** gets the current bearing and matches it to the destination. Automated keystrokes are then performed to adjust accordingly.⭐**Essentially, assuming everything works properly, you will pull out your ship to the open sea and come back when you get a notification.**
+**AutoSteer** gets the current and matches it to the destination bearing (DEST, ICEBG, etc.). Automated keystrokes are then performed to adjust accordingly.⭐**Essentially, assuming everything works properly, you will pull out your ship to the open sea and come back when you get a notification.**
 
 ---
 
@@ -32,7 +32,7 @@ If you are not using the [compiled version](https://github.com/SSkipr/Aeronautic
 
 ### 2. **Installing Dependencies**
 
-**Normally, the program will install any required libraries for you upon first launch.** However, if you want to install the libraries yourself, please follow the instructions below.
+**Normally, the program will install any required libraries for you upon first launch.** However, if it doesn't, please follow the instructions below.
 
 In your terminal or command prompt, run:
 
@@ -64,6 +64,9 @@ Your project might look like this:
 - **log_data.txt:**  
   The application will create this log file to store timestamps, OCR output, and any alerts sent.
 
+- **data.txt:**  
+  This is used for Auto-Saved data. This includes your webhook, do not send this file to others as they can send messages via your webhook.
+
 
 ### 4. **Running the Application**
 
@@ -78,6 +81,11 @@ Your project might look like this:
    ```
 
    You can also open it in a code editor (such as VS Code) and run it there.
+
+
+### 5. **Configuration**
+
+Configure all of the values to your (ship's) liking! 😁
 
   ---
 
@@ -95,7 +103,7 @@ Your project might look like this:
 
 - Close the chat/player list so others can't mess up your mission!
 
-- Some boats turn quicker than others (though it may take longer); they will all reach the target. Customize the `MULTIPLIER` to your ship's liking; ensure it doesn't auscultate.
+- Some boats turn quicker than others (though it may take longer); they will all reach the target. Customize the `TURNING MULTIPLIER` to your ship's needs, keep between .5-2; ensure it doesn't auscultate.
 
 - The script is set up to use the default key binds and metrics: A, D, Z, Knots, and Nautical Miles.
 
@@ -105,15 +113,15 @@ Your project might look like this:
 
 ## 🗣️ Latest Version: 2.4
 
+- Data Saving
+
+- Option to Share Anonymous Data w/ Developer (this will ONLY be used to fix bugs)
+
+- Various Bug Fixes
+
 - Installation Assistant
 
-- [Compiled Version](https://github.com/SSkipr/AeronauticaHelper/releases)
-
-- MacOS Support!
-
-- UI
-
-- QoL Improvements
+- [v2.4 Compiled Version](https://github.com/SSkipr/AeronauticaHelper/releases)
 
 Enjoy!
 
@@ -123,7 +131,7 @@ Enjoy!
 
 - Full AutoPilot (v3)?
 
-- AI Pathfinding (v4)
+- AI Pathfinding (v4) - People keep asking for this- why not just set a waypoint mission around the island using Aeronautica's 'Flight Plan Route' and 'Waypoint' features?
 
 ---
 
