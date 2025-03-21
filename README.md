@@ -37,7 +37,7 @@ If you are not using the [compiled version](https://github.com/SSkipr/Aeronautic
 In your terminal or command prompt, run:
 
 ```bash
-pip install pyautogui easyocr numpy requests pynupt PyQt5
+pip install pyautogui easyocr numpy requests pynput PyQt5
 ```
 or
 ```bash
