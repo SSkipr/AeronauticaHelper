@@ -14,7 +14,7 @@ As previously stated, the application will recognize the following and send aler
 - Game crashes
 - When you approach the destination (the ship will stop too)
 
-Major alerts, such as the cases above, will include an @everyone ping, while non-major alerts will not receive one.
+Urgent alerts, such as the cases above, will include an @everyone ping, while (non-urgent) alerts will not receive a ping. You can disable regular, non-urgent alerts in the application.
 
 **AutoSteer** gets the current bearing and matches it to the destination. Automated keystrokes are then performed to adjust accordingly.⭐**Essentially, assuming everything works properly, you will pull out your ship to the open sea and come back when you get a notification.**
 
@@ -28,7 +28,7 @@ If you are not using the [compiled version](https://github.com/SSkipr/Aeronautic
 ### 1. **Python Environment**
 
 - **Python Version:** 
-  Make sure you have Python 3.7 or higher installed. You can download it from [python.org](https://www.python.org/downloads/).
+  Make sure you have installed Python 3.7 or higher. You can download it from [python.org](https://www.python.org/downloads/).
 
 ### 2. **Installing Dependencies**
 
@@ -62,7 +62,7 @@ Your project might look like this:
   - The main loop that ties everything together, running at a fixed interval (or dynamically based on elapsed time).
 
 - **log_data.txt:**  
-  This log file will be created by the application to store timestamps, OCR output, and any alerts sent.
+  The application will create this log file to store timestamps, OCR output, and any alerts sent.
 
 
 ### 4. **Running the Application**
@@ -93,7 +93,7 @@ Your project might look like this:
 
 - Some boats turn quicker than others (though it may take longer); they will all reach the target. Customize the `MULTIPLIER` to your ship's liking; ensure it doesn't auscultate.
 
-- The script is setup to use the deafult keybinds: A, D, and Z.
+- The script is set up to use the default key binds and metrics: A, D, Z, Knots, and Nautical Miles.
 
 - If you enjoy our code, please ⭐ and 👁️ the repo!
 
