@@ -23,12 +23,18 @@ Urgent alerts, such as the cases above, will include an @everyone ping, while (n
 ## 🪟🍎 Installation
 
 **This code is supported by both Windows and MacOS!**
-If you are not using the [compiled version](https://github.com/SSkipr/AeronauticaHelper/releases), you must follow the instructions below (if you have previous Python experience, feel free to skip around):
+If you are not using the [compiled version](https://github.com/SSkipr/AeronauticaHelper/releases) (currently only for Windows), you must follow the instructions below:
 
 ### 1. **Python Environment**
 
 - **Python Version:** 
   Make sure you have installed Python 3.7 or higher. You can download it from [python.org](https://www.python.org/downloads/).
+
+### 1.1 **MacOS Certificates**
+If you are using MacOS, you *may* need to do the following:
+- Open the folder /Applications/Python 3.x (x is the version you have downloaded).
+- Double click the file `Install Certificates.command`. It will open a terminal and install the required certificates.
+    ![image](https://github.com/user-attachments/assets/d41ea9b3-23ec-4a12-9ab6-793b75e2c779)
 
 ### 2. **Installing Dependencies**
 
