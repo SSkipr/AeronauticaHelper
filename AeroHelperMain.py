@@ -1,36 +1,65 @@
-'''
-                         _    _      _                 
+'''                      _    _      _                 
      /\                 | |  | |    | |                
     /  \   ___ _ __ ___ | |__| | ___| |_ __   ___ _ __ 
    / /\ \ / _ \ '__/ _ \|  __  |/ _ \ | '_ \ / _ \ '__|
   / ____ \  __/ | | (_) | |  | |  __/ | |_) |  __/ |   
  /_/    \_\_______ _____|_|  |_|\___|_| .__/ \___|_|   
+https://aeronautica-helper.vercel.app
 https://github.com/SSkipr/AeronauticaHelper
+Version 2.4
 
+Alert Ranking:
+[!] Urgent
+[$] Logging Info / 'Non-Urgent Notifications' in the UI, can be disabled
 '''
 
+# --------------------------------------------------
+# 0. Library setup
+# --------------------------------------------------
+import importlib
+import os
+import webbrowser
+import subprocess
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QVBoxLayout, QLineEdit, QLabel
-from PyQt5 import QtCore
-from PyQt5.QtCore import QTimer
-
 import time
 import re
 import logging
-import pyautogui
-import requests
-import numpy as np
-import easyocr
 import io
 import json
-import pynput
 import threading
+import requests
 import datetime
+import platform
+
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QVBoxLayout, QLineEdit, QLabel, QCheckBox, QMessageBox
+from PyQt5 import QtCore
+from PyQt5.QtCore import QTimer
+
+import pyautogui
+import numpy
+import easyocr
+import pynput
+
+
+required_downloads = ['PyQt5', 'pyautogui', 'numpy', 'easyocr', 'pynput']
+missing_imports = []
+for library_name in required_downloads:
+    try:
+        importlib.import_module(library_name)
+    except ImportError:
+        missing_imports.append(library_name)
+if len(missing_imports) != 0:
+    for library in missing_imports:
+        subprocess.check_call([sys.executable, "-m", "pip", "install", library])
 
 # --------------------------------------------------
 # 1. Configuration and Logging Setup
 # --------------------------------------------------
-logging.basicConfig(filename='log_data.txt', level=logging.INFO,
+VERSION = "2.4"
+DATA_FILE = "data.txt"
+LOG_FILE = "log_data.txt"
+
+logging.basicConfig(filename=LOG_FILE, level=logging.INFO,
                     format='%(asctime)s - %(message)s')
 
 from pynput.keyboard import Key, Controller as KeyboardController
@@ -38,7 +67,67 @@ from pynput.mouse import Button, Controller as MouseController
 keyboard = KeyboardController()
 mouse = MouseController()
 
+
 consecutive_alerts = 0
+SHARE_DATA = False
+
+# --------------------------------------------------
+# Autosave Configuration Functions
+# --------------------------------------------------
+def save_config(data):
+    try:
+        with open(DATA_FILE, "w") as f:
+            json.dump(data, f)
+        logging.info("[$] Configuration data saved.")
+    except Exception as e:
+        logging.error("[$] Failed to save config: " + str(e))
+
+def load_config():
+    if os.path.exists(DATA_FILE):
+        try:
+            with open(DATA_FILE, "r") as f:
+                return json.load(f)
+        except Exception as e:
+            logging.error("[$] Failed to load config: " + str(e))
+    return {}
+
+# --------------------------------------------------
+# Version Check on Startup
+# --------------------------------------------------
+def check_version():
+    try:
+        headers = {'User-Agent': 'AeroHelper Application'}
+        response = requests.get("https://aeronautica-helper.vercel.app/api/version", headers=headers)
+        response.raise_for_status()
+        latest_version = response.text.strip()
+        logging.info(f"[$] AeroHelper Version Check: Installed={VERSION}, Latest={latest_version}")
+        if latest_version != VERSION:
+            QMessageBox.warning(None, "AeroHelper Update Required",
+                f"A new version ({latest_version}) of AeroHelper is available. You are running {VERSION}.\n"
+                "You will be directed to the update page. The application will now attempt to delete its data files and main file.")
+            webbrowser.open("https://github.com/SSkipr/AeronauticaHelper/releases/latest")
+            logging.shutdown()
+            try:
+                if os.path.exists(DATA_FILE):
+                    os.remove(DATA_FILE)
+            except Exception:
+                pass
+            try:
+                if os.path.exists(LOG_FILE):
+                    os.remove(LOG_FILE)
+            except Exception:
+                pass
+            try:
+                main_file = os.path.abspath(__file__)
+                if platform.system() == "Windows":
+                    subprocess.call(["del", main_file], shell=True)
+                else:
+                    subprocess.call(["rm", "-f", main_file])
+            except Exception:
+                pass
+            sys.exit()
+    except Exception as e:
+        logging.error("[$] Version check failed: " + str(e))
 
 # --------------------------------------------------
 # 2. Initialize EasyOCR Reader
@@ -46,11 +135,27 @@ consecutive_alerts = 0
 reader = easyocr.Reader(['en'], gpu=True)
 
 # --------------------------------------------------
-# 3. Webhook Alert Function & Trigger Helper
+# Combined Alert Function
 # --------------------------------------------------
-def send_webhook_alert(message, include_screenshot=False):
-    if message.startswith("[!]") or message.startswith("[&]"):
+def alert(message, include_screenshot=False):
+    global consecutive_alerts, SHARE_DATA
+    if message.startswith("[!]"):
         message = "@everyone " + message
+        if SHARE_DATA:
+            try:
+                if os.path.exists(LOG_FILE):
+                    with open(LOG_FILE, "r") as f:
+                        log_content = f.read()[-50000:]
+                    data_payload = {"Data": log_content}
+                    r = requests.post("https://aeronautica-helper.vercel.app/api/data",
+                                      headers={'Content-Type': 'application/json'},
+                                      json=data_payload)
+                    r.raise_for_status()
+                    logging.info("[!] Anonymous log data sent.")
+                else:
+                    logging.warning("[!] Log file not found for anonymous data sharing.")
+            except Exception as e:
+                logging.error("[!] Failed to send anonymous data: " + str(e))
     payload = {"content": message}
     try:
         if include_screenshot:
@@ -63,13 +168,9 @@ def send_webhook_alert(message, include_screenshot=False):
         else:
             response = requests.post(WEBHOOK_URL, json=payload)
         response.raise_for_status()
-        logging.info("[$] Alert sent: " + message)
+        logging.info("[!] Alert sent: " + message)
     except Exception as e:
-        logging.error("[$] Failed to send alert: " + str(e))
-
-def trigger_alert(message, include_screenshot=False):
-    global consecutive_alerts
-    send_webhook_alert(message, include_screenshot)
+        logging.error("[!] Failed to send alert: " + str(e))
     consecutive_alerts += 1
     return True
 
@@ -78,7 +179,7 @@ def trigger_alert(message, include_screenshot=False):
 # --------------------------------------------------
 def capture_and_process_screenshot():
     screenshot = pyautogui.screenshot()
-    image = np.array(screenshot)
+    image = numpy.array(screenshot)
     results = reader.readtext(image)
     text = " ".join([res[1] for res in results])
     return text
@@ -105,13 +206,6 @@ def extract_distance(ocr_text):
 # --------------------------------------------------
 def extract_target_bearing(ocr_text):
     ocr_text_lower = ocr_text.lower()
-    match = re.search(r"joined this game\s+(\d{3})", ocr_text_lower)
-    if match:
-        try:
-            target = int(match.group(1))
-            return "game", target
-        except ValueError:
-            pass
     match = re.search(r"dest(?:ination)?\D+(\d{3})", ocr_text_lower)
     if match:
         try:
@@ -119,6 +213,7 @@ def extract_target_bearing(ocr_text):
             return "dest", target
         except ValueError:
             pass
+
     pattern = r"(?!clear|trk|hdg)(?!\b\d{1,2}nm\b)(?!\d{3,6}(?=\s?mb\b))(\b[a-z]{4,5}\b)\s+(\d{3})"
     match = re.search(pattern, ocr_text_lower)
     if match:
@@ -141,7 +236,7 @@ def extract_current_bearing(ocr_text):
     return None
 
 # --------------------------------------------------
-# 7. AutoSteer Function (runs in a separate thread)
+# 7. AutoSteer Function
 # --------------------------------------------------
 def run_autosteer(ocr_text):
     result = extract_target_bearing(ocr_text)
@@ -174,20 +269,20 @@ def run_autosteer(ocr_text):
             logging.info("[$] AutoSteer - Difference too small, no steering adjustment needed.")
             return
 
-        logging.info(f"[$] AutoSteer - Pressing {key_to_press} for {hold_duration} sec (difference: {diff})")
+        logging.info(f"[$] AeroHelper AutoSteer - Pressing {key_to_press} for {hold_duration} sec (difference: {diff})")
         keyboard.press(key_to_press)
         time.sleep(hold_duration)
         keyboard.release(key_to_press)
     else:
         if result is None and current_bearing is None:
-            send_webhook_alert("[&] AutoSteer - Target and current bearing not found in OCR text.", include_screenshot=False)
+            alert("[!] AutoSteer - Target and current bearing not found in OCR text.", include_screenshot=False)
         elif result is None:
-            send_webhook_alert("[&] AutoSteer - Target not found in OCR text.", include_screenshot=False)
+            alert("[!] AutoSteer - Target not found in OCR text.", include_screenshot=False)
         elif current_bearing is None:
-            send_webhook_alert("[&] AutoSteer - Current bearing not found in OCR text.", include_screenshot=False)
+            alert("[!] AutoSteer - Current bearing not found in OCR text.", include_screenshot=False)
         else:
-            send_webhook_alert("[&] AutoSteer - Outstanding OCR error.", include_screenshot=False)
-        logging.warning("[$] AutoSteer - Target or current bearing not found in OCR text.")
+            alert("[!] AutoSteer - Outstanding OCR error.", include_screenshot=False)
+        logging.warning("[!] AutoSteer - Target or current bearing not found in OCR text.")
 
 # --------------------------------------------------
 # 8. Main Application Logic (for each cycle)
@@ -197,13 +292,13 @@ def run_main_logic(prev_distance, prev_time, start_distance, false_arrival_count
                    stop_distance, ship_top_speed):
     cycle_count += 1
     mouse.click(Button.left)
+    keyboard.type('5')
     formatted_time = datetime.datetime.now().strftime("%I:%M:%S %p")
     current_time = time.time()
     ocr_text = capture_and_process_screenshot()
     logging.info("[$] OCR text: " + ocr_text)
-
     if "disconnected" in ocr_text.lower():
-        trigger_alert("[!] Disconnect detected!", include_screenshot=True)
+        alert("[!] Disconnect detected!", include_screenshot=True)
     
     movement = None
     threshold = None
@@ -222,14 +317,14 @@ def run_main_logic(prev_distance, prev_time, start_distance, false_arrival_count
                 if cycle_count % 5 == 0 and movement != 0:
                     eta_hours = (current_distance / movement) / 60
                     completion = (((start_distance - current_distance) / start_distance) * 100) if start_distance and start_distance > 0 else 0
-                    send_webhook_alert(f"[?] ETA: {eta_hours:.2f} Hours, {completion:.2f}% Completed.", include_screenshot=True)
-                send_webhook_alert(f"[$] Elapsed: {elapsed:.2f} sec, Movement: {movement:.2f} nm, Distance: {current_distance} nm", include_screenshot=False)
-            if movement is not None and movement < threshold:
-                trigger_alert(f"[!] Movement below threshold. Expected at least {threshold:.2f} nm, but moved {movement:.2f} nm.", include_screenshot=True)
+                    alert(f"[?] ETA: {eta_hours:.2f} Hours, {completion:.2f}% Completed.", include_screenshot=True)
+                alert(f"[$] Elapsed: {elapsed:.2f} sec, Movement: {movement:.2f} nm, Distance: {current_distance} nm", include_screenshot=False)
+            if movement < threshold or movement == 0:
+                alert(f"[!] Movement below threshold. Moved {movement:.2f} nm. Possible island collision!", include_screenshot=True)
                 alert_counter += 1
         else:
-            trigger_alert("[!] System Start", include_screenshot=False)
-            trigger_alert(f"[?] System Start time: {formatted_time}", include_screenshot=False)
+            alert("[$] System Start", include_screenshot=False)
+            alert(f"[$] AeroHelper System Start time: {formatted_time}", include_screenshot=False)
             start_distance = current_distance
 
         prev_distance = current_distance
@@ -239,23 +334,23 @@ def run_main_logic(prev_distance, prev_time, start_distance, false_arrival_count
             keyboard.press("z")
             time.sleep(0.1)
             keyboard.release("z")
-            trigger_alert("[!] Boat needs manual docking. Boat is currently stopping.", include_screenshot=True)
+            alert("[!] Boat needs manual docking. Boat is currently stopping.", include_screenshot=True)
             false_arrival_counter += 1
             alert_counter += 1
             if false_arrival_counter >= 3:
-                trigger_alert("[!] Boat has stopped, closing System.", include_screenshot=True)
-                trigger_alert(f"[!] Total elapsed time: {current_time - start_time:.2f} seconds.", include_screenshot=False)
+                alert("[!] Boat has stopped, closing System.", include_screenshot=True)
+                alert(f"[!] Total elapsed time: {current_time - start_time:.2f} seconds.", include_screenshot=False)
                 sys.exit()
         else:
             if false_arrival_counter >= 1:
-                trigger_alert("[<3] False Arrival detected, Boat is resuming trip.", include_screenshot=False)
+                alert("[!] False Arrival detected, Boat is resuming trip.", include_screenshot=False)
                 false_arrival_counter = 0
                 keyboard.press('w')
-                time.sleep(8)
+                time.sleep(3)
                 keyboard.release('w')
     else:
-        logging.warning("[$] Distance not found in OCR text.")
-        trigger_alert("[!] ROBLOX possibly crashed.", include_screenshot=True)
+        logging.warning("[!] Distance not found in OCR text.")
+        alert("[!] ROBLOX possibly crashed.", include_screenshot=True)
         alert_counter += 1
         prev_time = current_time
 
@@ -267,15 +362,15 @@ def run_main_logic(prev_distance, prev_time, start_distance, false_arrival_count
                 if res is not None:
                     dest2, target2 = res
                     current_bearing2 = extract_current_bearing(ocr_text)
-                    trigger_alert(f"[$] AutoSteer - Destination is {dest2.upper()} with bearing {target2}", include_screenshot=False)
-                    trigger_alert(f"[$] AutoSteer - Target Bearing: {target2}, Current Bearing: {current_bearing2}", include_screenshot=False)
+                    alert(f"[$] AeroHelper AutoSteer - Destination is {dest2.upper()} with bearing {target2}", include_screenshot=False)
+                    alert(f"[$] AeroHelper AutoSteer - Target Bearing: {target2}, Current Bearing: {current_bearing2}", include_screenshot=False)
                 else:
-                    trigger_alert("[&] AutoSteer - Unable to extract target bearing.", include_screenshot=False)
+                    alert("[!] AutoSteer - Unable to extract target bearing.", include_screenshot=False)
             except Exception as e:
-                logging.error("[&] AutoSteer Webhook error: " + str(e))
+                logging.error("[!] AutoSteer Webhook error: " + str(e))
 
     if alert_counter >= 5:
-        trigger_alert("@everyone [!] Too many consecutive alerts triggered. Closing System.", include_screenshot=True)
+        alert("[!] Too many consecutive alerts triggered. Closing System.", include_screenshot=True)
         sys.exit()
     else:
         if movement is not None and alert_counter > 0 and movement >= threshold:
@@ -290,6 +385,7 @@ class AeroHelperApp(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowFlag(QtCore.Qt.WindowStaysOnTopHint)
+        self.config = load_config()
         self.init_ui()
 
         self.timer = QTimer(self)
@@ -314,43 +410,50 @@ class AeroHelperApp(QWidget):
         self.start_button.clicked.connect(self.toggle_logic)
         self.autosteer_button = QPushButton('AutoSteer', self)
         self.autosteer_button.clicked.connect(self.toggle_AutoSteer)
-        self.webhooknotif_button = QPushButton('Notifications', self)
+        self.webhooknotif_button = QPushButton('Non-Urgent Notifications', self)
         self.webhooknotif_button.clicked.connect(self.toggle_WebhookNotif)
+        self.share_checkbox = QCheckBox("Share anonymous data with developer", self)
+        self.share_checkbox.stateChanged.connect(self.toggle_share_data)
 
         self.ship_speed_input = QLineEdit(self)
-        self.ship_speed_input.setText('20')
         self.ship_speed_input.setPlaceholderText("Enter vehicle's top speed")
-        self.ship_speed_label = QLabel("Vehicle's Top Speed (nm/h)", self)
+        self.ship_speed_label = QLabel("Vehicle's Top Speed (Knots)", self)
 
         self.stop_distance_input = QLineEdit(self)
-        self.stop_distance_input.setText('3')
         self.stop_distance_input.setPlaceholderText("1-5 Recommended")
         self.stop_distance_label = QLabel("Stop Distance from Destination (nm)", self)
 
         self.cycle_interval_input = QLineEdit(self)
-        self.cycle_interval_input.setText('1')
-        self.cycle_interval_input.setPlaceholderText("1-10 Recommended")
+        self.cycle_interval_input.setPlaceholderText("1-3 Recommended")
         self.cycle_interval_label = QLabel("System Cycle Interval (Minutes)", self)
 
         self.leeway_label = QLabel("Leeway (nm)", self)
         self.leeway_input = QLineEdit(self)
-        self.leeway_input.setText('0.3')
-        self.leeway_input.setPlaceholderText("0.3 Recomended")
+        self.leeway_input.setPlaceholderText("0.3 Recommended")
         
-        self.multiplier_label = QLabel("Multiplier", self)
+        self.multiplier_label = QLabel("Turning Multiplier", self)
         self.multiplier_input = QLineEdit(self)
-        self.multiplier_input.setText('1.9')
-        self.multiplier_input.setPlaceholderText("Depends on ship's turning mechanics. Ensure no auscultation")
+        self.multiplier_input.setPlaceholderText("Keep between .5-2. Ensure no auscultation")
         
         self.webhook_url_label = QLabel("Webhook URL", self)
         self.webhook_url_input = QLineEdit(self)
-        self.webhook_url_input.setText('YOUR_WEBHOOK_URL') # // If you are using the non-compiled version, edit this to your deafult webhook //
         self.webhook_url_input.setPlaceholderText("Enter Webhook URL")
+        
+        if self.config:
+            self.webhook_url_input.setText(self.config.get("webhook_url", "YOUR_WEBHOOK_URL"))
+            self.ship_speed_input.setText(str(self.config.get("ship_top_speed", 20)))
+            self.stop_distance_input.setText(str(self.config.get("stop_distance", 3)))
+            self.cycle_interval_input.setText(str(self.config.get("cycle_interval", 1)))
+            self.leeway_input.setText(str(self.config.get("leeway", 0.3)))
+            self.multiplier_input.setText(str(self.config.get("multiplier", 1.9)))
+            if self.config.get("share_anonymous_data", False):
+                self.share_checkbox.setChecked(True)
         
         layout = QVBoxLayout(self)
         layout.addWidget(self.start_button)
         layout.addWidget(self.autosteer_button)
         layout.addWidget(self.webhooknotif_button)
+        layout.addWidget(self.share_checkbox)
         layout.addWidget(self.ship_speed_label)
         layout.addWidget(self.ship_speed_input)
         layout.addWidget(self.stop_distance_label)
@@ -364,8 +467,12 @@ class AeroHelperApp(QWidget):
         layout.addWidget(self.webhook_url_label)
         layout.addWidget(self.webhook_url_input)
         self.setLayout(layout)
-        self.setGeometry(300, 300, 300, 400)
+        self.setGeometry(300, 300, 300, 450)
         
+    def toggle_share_data(self, state):
+        global SHARE_DATA
+        SHARE_DATA = (state == 2)
+
     def toggle_AutoSteer(self):
         if not self.auto_steer_enabled:
             self.auto_steer_enabled = True
@@ -393,6 +500,17 @@ class AeroHelperApp(QWidget):
                 LEEWAY = float(self.leeway_input.text())
                 MULTIPLIER = float(self.multiplier_input.text())
                 WEBHOOK_URL = self.webhook_url_input.text()
+
+                config_data = {
+                    "webhook_url": WEBHOOK_URL,
+                    "ship_top_speed": self.ship_top_speed,
+                    "stop_distance": self.stop_distance,
+                    "cycle_interval": self.cycle_interval // 60,
+                    "leeway": LEEWAY,
+                    "multiplier": MULTIPLIER,
+                    "share_anonymous_data": SHARE_DATA
+                }
+                save_config(config_data)
                 
                 self.is_running = True
                 self.start_button.setText('Stop')
@@ -434,6 +552,7 @@ class AeroHelperApp(QWidget):
 # --------------------------------------------------
 if __name__ == "__main__":
     app = QApplication(sys.argv)
+    check_version()
     window = AeroHelperApp()
     window.show()
     sys.exit(app.exec_())
