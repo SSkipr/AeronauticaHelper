@@ -109,6 +109,8 @@ Configure all of the values to your (ship's) liking! 😁
 
 - Close the chat/player list so others can't mess up your mission!
 
+- If the application constantly experiences unexplained errors, consider restarting your machine.
+
 - Some boats turn quicker than others (though it may take longer); they will all reach the target. Customize the `TURNING MULTIPLIER` to your ship's needs, keep between .5-2; ensure it doesn't auscultate.
 
 - The script is set up to use the default key binds and metrics: A, D, Z, Knots, and Nautical Miles.
@@ -121,7 +123,7 @@ Configure all of the values to your (ship's) liking! 😁
 
 - Data Saving
 
-- Option to Share Anonymous Data w/ Developer (this will ONLY be used to fix bugs)
+- Option to Share Anonymous Data w/ Developer
 
 - Various Bug Fixes
 
@@ -130,6 +132,12 @@ Configure all of the values to your (ship's) liking! 😁
 - [v2.4 Compiled Version](https://github.com/SSkipr/AeronauticaHelper/releases)
 
 Enjoy!
+
+---
+
+## 🕵️ Anonymous Data Sharing
+
+This is an option because I want to see what issues people are experiencing, so I can fix them! This Data is 100% anonymous and will only be used to fix bugs. Think about enabling this option if you want to assist me, other users, and the advancement of this code!
 
 ---
 
