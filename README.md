@@ -2,7 +2,7 @@
 
 
 # 👉 AeronauticaHelper Setup 👈
-This is an application that watches your AFK boat in Aeronautica! You will get a notification via the webhook if the game crashes, if you disconnect, or if your boat suddenly stops (island collision, out of fuel, etc), accompanied by a screenshot.
+This is an application that watches your AFK boat in Aeronautica! You will get a notification via the webhook if the game crashes, if you disconnect, or if your boat suddenly stops (island collision, out of fuel, etc), accompanied by a screenshot. Consider sharing the [website](https://aeronautica-helper.vercel.app/) with others to spread the information!
 
 ---
 
@@ -21,7 +21,6 @@ Urgent alerts, such as the cases above, will include an @everyone ping, while (n
 ---
 
 ## 🪟🍎 Installation
-
 **This code is supported by both Windows and MacOS!**
 If you are not using the [compiled version](https://github.com/SSkipr/AeronauticaHelper/releases) (currently only for Windows), you must follow the instructions below:
 
@@ -37,7 +36,6 @@ If you are using MacOS, you *may* need to do the following:
     ![image](https://github.com/user-attachments/assets/d41ea9b3-23ec-4a12-9ab6-793b75e2c779)
 
 ### 2. **Installing Dependencies**
-
 **Normally, the program will install any required libraries for you upon first launch.** However, if it doesn't, please follow the instructions below.
 
 In your terminal or command prompt, run:
@@ -51,7 +49,6 @@ py -m pip install pyautogui easyocr numpy requests pynput PyQt5
 ```
 
 ### 3. **Project Structure**
-
 Your project might look like this:
 ```
 /AeronauticaHelper
@@ -75,7 +72,6 @@ Your project might look like this:
 
 
 ### 4. **Running the Application**
-
 **Run the Code:**  
    In your terminal or command prompt, navigate to your project directory and run:
    ```bash
@@ -90,7 +86,6 @@ Your project might look like this:
 
 
 ### 5. **Configuration**
-
 Configure all of the values to your (ship's) liking! 😁
 
   ---
@@ -130,8 +125,6 @@ Configure all of the values to your (ship's) liking! 😁
 - Installation Assistant
 
 - [v2.4 Compiled Version](https://github.com/SSkipr/AeronauticaHelper/releases)
-
-Enjoy!
 
 ---
 
