@@ -2,7 +2,7 @@
 
 
 # 👉 AeronauticaHelper Setup 👈
-This is an application that watches your AFK boat in Aeronautica! You will get a notification via the webhook if the game crashes, if you disconnect, or if your boat suddenly stops (island collision, out of fuel, etc), accompanied by a screenshot. Consider sharing the [website](https://aeronautica-helper.vercel.app/) with others to spread the information!
+This is an application that watches your AFK boat in Aeronautica! You will get a notification via the webhook if the game crashes, if you disconnect, or if your boat suddenly stops (island collision, out of fuel, etc), accompanied by a screenshot. **Version 2 introduced AutoSteer** and built-in Anti-AFK. Consider sharing the [website](https://aeronautica-helper.vercel.app/) with others to spread the information!
 
 ---
 
@@ -15,6 +15,8 @@ As previously stated, the application will recognize the following and send aler
 - When you approach the destination (the ship will stop too)
 
 Urgent alerts, such as the cases above, will include an @everyone ping, while (non-urgent) alerts will not receive a ping. You can disable regular, non-urgent alerts in the application.
+
+An AutoClicker is not needed as there is built-in Anti-AFK.
 
 **AutoSteer** gets the current and matches it to the destination bearing (DEST, ICEBG, etc.). Automated keystrokes are then performed to adjust accordingly.⭐**Essentially, assuming everything works properly, you will pull out your ship to the open sea and come back when you get a notification.**
 
