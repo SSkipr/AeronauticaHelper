@@ -12,6 +12,7 @@ If you have identified a vulnerability, please report it through [SSkipr](https:
 
 Your report should include:
 
+- Your operating system, Windows/MacOS.
 - The version of AeronauticaHelper where the vulnerability was found.
 - A brief description of the vulnerability.
 - Steps to reproduce the issue.
