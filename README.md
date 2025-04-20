@@ -1,3 +1,6 @@
+⚠️ **This is the `Simple` branch**. Currently, this code is not up to date. More specifically, it is the equivalent of the main branch's ~v2. For updated functionality, use the [main branch](https://github.com/SSkipr/AeronauticaHelper).
+
+
 # 👉 Simple AeronauticaHelper Setup 👈
 A simpler version of the [main code](https://github.com/SSkipr/AeronauticaHelper/tree/Complex) which is an application that watches your AFK boat in Aeronautica! You will get a status update with a screenshot via the webhook every 30 minutes (time can be changed). There is built-in Anti-AFK.
 
