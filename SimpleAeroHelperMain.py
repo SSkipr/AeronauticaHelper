@@ -46,10 +46,10 @@ mouse = MouseController()
 
 # Constants:
 CYCLE_INTERVAL = 60       # Cycle interval in seconds (must be within 1m-19m and factor of 60, 1m is recomended)
-STOP_DISTANCE = 3 # Stop distance in your units selected ingame
+STOP_DISTANCE = 5 # Stop distance in your units selected ingame
 WEBHOOK_INTERVAL = 30 * 60 # Webhook interval in seconds, set to 10m minimum
-STEERING_MULTIPLIER = 1.5 # Steering multiplier, keep close to 1 and don't exceed 3. Use bigger multipliers for slower-turning ships
-WEBHOOK_URL = "YOUR_WEBHOOK_URL" # your webhook URL for updates
+STEERING_MULTIPLIER = 1.2 # Steering multiplier, keep close to 1 and don't exceed 3. Use bigger multipliers for slower-turning ships
+WEBHOOK_URL = "WEBHOOK" # your webhook URL for updates
 
 # --------------------------------------------------
 # 2. Initialize EasyOCR Reader
@@ -181,6 +181,11 @@ def main():
             (int(0.105 * screen_width), int(0.72 * screen_height), int(0.04 * screen_width), int(0.04 * screen_height)), # Dest Bearing + Dest distance Capture
             (int(0.475 * screen_width), int(0.055 * screen_height), int(0.02 * screen_width), int(0.03 * screen_height))  # Current Bearing (TRK) Capture
         ] 
+    elif screen_height == 900: # if 16:10 (macbook display)
+       regions = [
+        (int(0.117 * screen_width), int(0.73 * screen_height), int(0.06 * screen_width), int(0.04 * screen_height)), # Dest Bearing + Dest distance Capture
+        (int(0.45 * screen_width), int(0.13 * screen_height), int(0.04 * screen_width), int(0.03 * screen_height))  # Current Bearing Capture     
+        ]   
     elif screen_height == 1440: # If 1440p:
         regions = [
             (int(0.105 * screen_width), int(0.73 * screen_height), int(0.04 * screen_width), int(0.04 * screen_height)), # Dest Bearing + Dest distance Capture
@@ -197,7 +202,7 @@ def main():
             (int(0.425 * screen_width), int(0.17 * screen_height), int(0.045 * screen_width), int(0.03 * screen_height))  # Current Bearing (TRK) Capture
         ]
     else: # If not on any of the supported resolutions:
-        print("You're not on a supported resolution, the supported resolutions are: 4k, 1440p, 1080p and 720p. Please rerun this program when you have one of those resolutions selected") 
+        print("You're not on a supported resolution, the supported resolutions are: 4k, 1440p, 1080p 1440x900 (macbook screens) and 720p. Please rerun this program when you have one of those resolutions selected") 
         exit() # Close the program
 
     
