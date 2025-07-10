@@ -13,7 +13,7 @@
            |_____/_____/|_|\_\_| .__/|_|               
                                | |                     
                                |_|                     
-Version: 1 (simple)
+Version: 1.1 (simple)
 ChatGPT Was used for the regex stuff here, sorry if it isn't great - Person 12
 '''
 
@@ -29,8 +29,15 @@ import numpy as np
 import easyocr
 import io
 import json
-import pynput
 import threading
+import platform
+OS = platform.system()
+logging.info("OS detected as ", OS) # Logging
+
+if OS == "Windows":
+    import pydirectinput
+else:
+    import pynput
 
 # --------------------------------------------------
 # 1. Configuration and Logging Setup
@@ -40,8 +47,27 @@ logging.basicConfig(filename='log_data.txt', level=logging.INFO,
 
 from pynput.keyboard import Key, Controller as KeyboardController
 from pynput.mouse import Button, Controller as MouseController
-keyboard = KeyboardController()
-mouse = MouseController()
+pynputkeyboard = KeyboardController()
+pynputmouse = MouseController()
+
+def MouseLeft(x,y):
+    if OS == "Windows":
+        pydirectinput.click(x,y)
+    else:
+        pynputmouse.click(Button.left)
+
+def Keyboard(button, duration):
+    if OS == "Windows":
+        pydirectinput.KeyDown(button)
+        time.sleep(duration)
+        pydirectinput.KeyUp(button)
+    else:
+        pynputkeyboard.press(button)
+        time.sleep(duration)
+        pynputkeyboard.release(button)
+    
+
+
 
 
 # Constants:
@@ -70,9 +96,9 @@ def send_webhook_alert(message):
         files = {"file": ("screenshot.png", buffer, "image/png")}
         response = requests.post(WEBHOOK_URL, data={"payload_json": json.dumps(payload)}, files=files) # Send the webhook
         response.raise_for_status()
-        logging.info("[$] Alert sent with screenshot: " + message) # Logs
+        logging.info("Alert sent with screenshot: " + message) # Logs
     except Exception as e: # If we run into a error, capture the error as e
-        logging.error("[$] Failed to send alert with screenshot: " + str(e)) # Log error
+        logging.error("Failed to send alert with screenshot: " + str(e)) # Log error
 
 # --------------------------------------------------
 # 4. Screenshot Capture and OCR Processing
@@ -135,14 +161,14 @@ def run_autosteer(ocr_text):
     target = extract_target_bearing(ocr_text) # get target bearing
     current_bearing = extract_current_bearing(ocr_text) # get current bearing
     if target is not None and current_bearing is not None: # if we get numbers for both bearings
-        logging.info(f"[&] AutoSteer - Target Bearing: {target}, Current Bearing: {current_bearing}") #logs current and target bearings
+        logging.info(f"AutoSteer - Target Bearing: {target}, Current Bearing: {current_bearing}") #logs current and target bearings
         diff = abs(current_bearing - target)
         if target < current_bearing: # find direction needed to turn and set that to key_to_press
             key_to_press = 'a'
         elif target > current_bearing:
             key_to_press = 'd'
         else:
-            logging.info("[&] AutoSteer - No difference in bearing, no steering required.") # logging
+            logging.info("AutoSteer - No difference in bearing, no steering required.") # logging
             return
 
         if diff > 11:
@@ -154,18 +180,16 @@ def run_autosteer(ocr_text):
         elif 1 <= diff < 3:
             hold_duration = 0.75
         else:
-            logging.info("[&] AutoSteer - Difference too small, no steering adjustment needed.") # logging
+            logging.info("AutoSteer - Difference too small, no steering adjustment needed.") # logging
             return
         
         hold_duration = hold_duration * STEERING_MULTIPLIER # multiply the hold duration by the steering multiplier
 
-        logging.info(f"[&] AutoSteer - Pressing {key_to_press} for {hold_duration} sec (difference: {diff})") #log what direction + how long autosteer is being used for
-        keyboard.press(key_to_press)
-        time.sleep(hold_duration)
-        keyboard.release(key_to_press)
+        logging.info(f"AutoSteer - Pressing {key_to_press} for {hold_duration} sec (difference: {diff})") #log what direction + how long autosteer is being used for
+        Keyboard(key_to_press, hold_duration) #hold a/d for the set amount of time
         time.sleep(3)
     else:
-        logging.warning("[&] AutoSteer - Target or current bearing not found in OCR text.") # if one of the bearings is none, then we log the error
+        logging.warning("AutoSteer - Target or current bearing not found in OCR text.") # if one of the bearings is none, then we log the error
 
 # --------------------------------------------------
 # 8. Main Application Logic
@@ -216,11 +240,14 @@ def main():
     send_webhook_alert("Aerohelper has started successfully") # Webhook to confirm that it works
 
     while True:
-        mouse.click(Button.left)
+
+        centerX = screen_width/2
+        centerY = screen_height/2
+        MouseLeft(centerX, centerY)
 
         ocr_text = capture_and_process_screenshot(regions) # capture screenshot with regions found earlier
 
-        logging.info("[$] OCR text: " + ocr_text)
+        logging.info("OCR text: " + ocr_text)
             
         threading.Thread(target=run_autosteer, args=(ocr_text,)).start()
 
@@ -229,9 +256,7 @@ def main():
         if target_dist != None: # If there is a target distance
             target_dist = int(target_dist)
             if extract_distance(ocr_text) <= STOP_DISTANCE: # If current distance is less than or equal to stop distance
-                keyboard.press("z") #press z for 0.1 sec to stop boat
-                time.sleep(0.1)
-                keyboard.release("z")
+                Keyboard("z", 0.1) # Press z for 0.1s to stop the boat
                 send_webhook_alert("Boat has reached destination") #send webhook
                 exit() # Quits the program
 
@@ -243,7 +268,7 @@ def main():
 
         
         time.sleep(CYCLE_INTERVAL)
-        logging.info("[$] Cycle complete.")
+        logging.info("Cycle complete.")
 
 # --------------------------------------------------
 # 9. Application Entry Point
