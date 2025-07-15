@@ -116,14 +116,14 @@ def Keyboard(button, duration):
 # --------------------------------------------------
 def send_webhook_alert(message):
     payload = {"content": message}
-    try: # In a try/except as webhook may return a error
-        screenshot = pyautogui.screenshot() # Take a screenshot
-        buffer = io.BytesIO() # Create a buffer
-        screenshot.save(buffer, format="PNG") # Save image to buffer
+    try:
+        screenshot = pyautogui.screenshot()
+        buffer = io.BytesIO()
+        screenshot.save(buffer, format="PNG")
         buffer.seek(0)
 
         files = {"file": ("screenshot.png", buffer, "image/png")}
-        response = requests.post(WEBHOOK_URL, data={"payload_json": json.dumps(payload)}, files=files) # Send the webhook
+        response = requests.post(WEBHOOK_URL, data={"payload_json": json.dumps(payload)}, files=files)
         response.raise_for_status()
         logging.info("Alert sent with screenshot: " + message) # Logs
     except Exception as e: # If we run into a error, capture the error as e
@@ -134,9 +134,9 @@ def send_webhook_alert(message):
 # --------------------------------------------------
 def capture_and_process_screenshot(regions):
 
-    screenshots = [pyautogui.screenshot(region=region) for region in regions] # take screenshots in the regions specified when starting the program
+    screenshots = [pyautogui.screenshot(region=region) for region in regions]
 
-    text = [] # define the text variable
+    text = []
 
     for screenshot in screenshots: # for every screenshot:
         image = numpy.array(screenshot)
@@ -145,28 +145,27 @@ def capture_and_process_screenshot(regions):
     return str(text) # return the text variable (list) as a string
 
 # --------------------------------------------------
-# 5. Extract Bearing Values for AutoSteer
-# --------------------------------------------------
+# 5. Extract Bearing Values for AutoSteer-----------------------------
 def extract_target_bearing(ocr_text):
 
     text = ocr_text
 
-    match = re.search(r"\b\d+\b", text)  # Find the first number
+    match = re.search(r"\b\d+\b", text)
 
     if match:
-        first_number = int(match.group())  # Convert to an integer if needed
-        return first_number  # Returns the first number (Dest Heading)
+        first_number = int(match.group())
+        return first_number
         
 
 def extract_current_bearing(ocr_text):
     
     text = ocr_text
 
-    match = re.search(r"\b(\d+)\b(?!.*\b\d+\b)", text)  # Find the last number
+    match = re.search(r"\b(\d+)\b(?!.*\b\d+\b)", text)
 
     if match:
-        last_number = int(match.group(1))  # Extract the last number
-        return last_number # Returns the third number (TRK)
+        last_number = int(match.group(1))
+        return last_number
 
 # --------------------------------------------------
 # 6. AutoSteer Function (runs in a separate thread)
@@ -177,11 +176,12 @@ def run_autosteer(ocr_text):
     if target is not None and current_bearing is not None: # if we get numbers for both bearings
         logging.info(f"AutoSteer - Target Bearing: {target}, Current Bearing: {current_bearing}") #logs current and target bearings
         diff = abs(current_bearing - target)
-        if target < current_bearing: # find direction needed to turn and set that to key_to_press
+        if target < current_bearing:
             key_to_press = 'a'
         elif target > current_bearing:
             key_to_press = 'd'
         else:
+
             logging.info("AutoSteer - No difference in bearing, no steering required.") # logging
             return
 
@@ -197,7 +197,7 @@ def run_autosteer(ocr_text):
             logging.info("AutoSteer - Difference too small, no steering adjustment needed.") # logging
             return
         
-        hold_duration = hold_duration * STEERING_MULTIPLIER # multiply the hold duration by the steering multiplier
+        hold_duration = hold_duration * STEERING_MULTIPLIER
 
         logging.info(f"AutoSteer - Pressing {key_to_press} for {hold_duration} sec (difference: {diff})") #log what direction + how long autosteer is being used for
         Keyboard(key_to_press, hold_duration) #hold a/d for the set amount of time
@@ -210,14 +210,12 @@ def run_autosteer(ocr_text):
 # --------------------------------------------------
 def main():
 
-    screen_width, screen_height = pyautogui.size() # Find the screen width and height for region finding below
-
-    # Region finding, used to capture screenshots later:
+    screen_width, screen_height = pyautogui.size()
 
     if screen_height == 2160: # If 4k:
         regions = [
-            (int(0.105 * screen_width), int(0.72 * screen_height), int(0.04 * screen_width), int(0.04 * screen_height)), # Dest Bearing + Dest distance Capture
-            (int(0.475 * screen_width), int(0.055 * screen_height), int(0.02 * screen_width), int(0.03 * screen_height))  # Current Bearing (TRK) Capture
+            (int(0.105 * screen_width), int(0.72 * screen_height), int(0.04 * screen_width), int(0.04 * screen_height)),
+            (int(0.475 * screen_width), int(0.055 * screen_height), int(0.02 * screen_width), int(0.03 * screen_height))
         ] 
     elif screen_height == 900: # if 16:10 (macbook display)
        regions = [
@@ -226,18 +224,18 @@ def main():
         ]   
     elif screen_height == 1440: # If 1440p:
         regions = [
-            (int(0.105 * screen_width), int(0.73 * screen_height), int(0.04 * screen_width), int(0.04 * screen_height)), # Dest Bearing + Dest distance Capture
-            (int(0.47 * screen_width), int(0.08 * screen_height), int(0.02 * screen_width), int(0.03 * screen_height))  # Current Bearing (TRK) Capture
+            (int(0.105 * screen_width), int(0.73 * screen_height), int(0.04 * screen_width), int(0.04 * screen_height)),
+            (int(0.47 * screen_width), int(0.08 * screen_height), int(0.02 * screen_width), int(0.03 * screen_height))
         ]  
     elif screen_height == 1080: # If 1080p:
         regions = [
-            (int(0.105 * screen_width), int(0.73 * screen_height), int(0.04 * screen_width), int(0.04 * screen_height)), # Dest Bearing + Dest distance Capture
-            (int(0.455 * screen_width), int(0.1 * screen_height), int(0.035 * screen_width), int(0.03 * screen_height))  # Current Bearing (TRK) Capture
+            (int(0.105 * screen_width), int(0.73 * screen_height), int(0.04 * screen_width), int(0.04 * screen_height)),
+            (int(0.455 * screen_width), int(0.1 * screen_height), int(0.035 * screen_width), int(0.03 * screen_height))
         ] 
     elif screen_height == 720: # If 720p:
         regions = [
-            (int(0.105 * screen_width), int(0.74 * screen_height), int(0.04 * screen_width), int(0.04 * screen_height)), # Dest Bearing + Dest distance Capture
-            (int(0.425 * screen_width), int(0.17 * screen_height), int(0.045 * screen_width), int(0.03 * screen_height))  # Current Bearing (TRK) Capture
+            (int(0.105 * screen_width), int(0.74 * screen_height), int(0.04 * screen_width), int(0.04 * screen_height)),
+            (int(0.425 * screen_width), int(0.17 * screen_height), int(0.045 * screen_width), int(0.03 * screen_height))
         ]
     else: # If not on any of the supported resolutions:
         print("You're not on a supported resolution, the supported resolutions are: 4k, 1440p, 1080p 1440x900 (macbook screens) and 720p. Please rerun this program when you have one of those resolutions selected") 
@@ -246,25 +244,24 @@ def main():
     centerX = int(round(screen_width/2)) # Get screen centers for later so we don't have to keep doing the operation
     centerY = int(round(screen_height/2))
     
-    print("Aeronautica Helper v2")
+    print("Aeronautica Helper v1 (Simple)")
     time.sleep(1)
     print("Navigate to the ROBLOX tab, you have 10 seconds before the program starts")
     time.sleep(10)
     
-    start_time = time.time() #get start time
+    start_time = time.time()
 
-    send_webhook_alert("Aerohelper has started successfully") # Webhook to confirm that it works
+    send_webhook_alert("AeroHelper has started successfully")
 
     while True:
 
         MouseLeft(centerX, centerY)
 
-        ocr_text = capture_and_process_screenshot(regions) # capture screenshot with regions found earlier
+        ocr_text = capture_and_process_screenshot(regions)
 
         logging.info("OCR text: " + ocr_text)
             
         threading.Thread(target=run_autosteer, args=(ocr_text,)).start()
-
         elapsed_time = time.time() - start_time #find elapsed time
         if elapsed_time >= WEBHOOK_INTERVAL: # if it has been more than specified time for webhook interval
             start_time = time.time() #reset start
