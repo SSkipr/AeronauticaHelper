@@ -52,7 +52,7 @@ logging.info("OS detected as {OS}") # Logging
 # --------------------------------------------------
 # 2. Downloading and importing required packages
 # --------------------------------------------------
-required_downloads = ['PyQt5', 'pyautogui', 'numpy', 'easyocr', 'requests']
+required_downloads = ['pyautogui', 'numpy', 'easyocr', 'requests']
 missing_imports = []
 
 if OS == "Windows": # if on windows you need pydirecinput
