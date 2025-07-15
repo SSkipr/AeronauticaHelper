@@ -1,6 +1,6 @@
 '''
 
-                         _    _      _                 
+   simple                _    _      _                 
      /\                 | |  | |    | |                
     /  \   ___ _ __ ___ | |__| | ___| |_ __   ___ _ __ 
    / /\ \ / _ \ '__/ _ \|  __  |/ _ \ | '_ \ / _ \ '__|
@@ -18,12 +18,21 @@ ChatGPT Was used for the regex stuff here, sorry if it isn't great - Person 12
 '''
 
 
+# --------------------------------------------------
+# 1. Configuration
+# --------------------------------------------------
 
+CYCLE_INTERVAL = 60       # Cycle interval in seconds (must be lower than WEBHOOK_INTERVAL)
+WEBHOOK_INTERVAL = 30 * 60 # Webhook interval in seconds
+STEERING_MULTIPLIER = 1.6 # Steering multiplier, make bigger for larger ships. Keep relatively low as the ship will correct over time. Ensure it doesn't auscultate (go back and forth)
+WEBHOOK_URL = "YOUR_WEBHOOK_URL" # your webhook URL for screenshots
+
+if CYCLE_INTERVAL > 1140: # If the cycle time is more than 19m, set it to 19m (roblox anti-AFK will kick you if there is no input for 20m)
+    CYCLE_INTERVAL = 1440
 
 import time
-import re
+import re   
 import logging
-import pyautogui
 import io
 import json
 import threading
@@ -41,7 +50,7 @@ logging.info("OS detected as {OS}") # Logging
 
 
 # --------------------------------------------------
-# 0. Downloading and importing required packages
+# 2. Downloading and importing required packages
 # --------------------------------------------------
 required_downloads = ['PyQt5', 'pyautogui', 'numpy', 'easyocr', 'requests']
 missing_imports = []
@@ -62,23 +71,30 @@ if missing_imports:
         subprocess.check_call([sys.executable, "-m", "pip", "install", library])
 
 
+if OS == "Windows": # if on windows you need pydirecinput
+    import pydirectinput
+else: #otherwise you need pynput
+    import pynput
+    
+    from pynput.keyboard import Key, Controller as KeyboardController
+    from pynput.mouse import Button, Controller as MouseController
+    pynputkeyboard = KeyboardController()
+    pynputmouse = MouseController()
+
+
 
 import PyQt5
 import pyautogui
 import numpy
 import easyocr
 import pydirectinput
-import pynput 
 import requests
 
 # --------------------------------------------------
-# 1. Configuration and Logging Setup
+# 3. Initialize EasyOCR Reader and Input Setup
 # --------------------------------------------------
+reader = easyocr.Reader(['en'], gpu=False) # Change to true if needed, only compatible with some GPUs
 
-from pynput.keyboard import Key, Controller as KeyboardController
-from pynput.mouse import Button, Controller as MouseController
-pynputkeyboard = KeyboardController()
-pynputmouse = MouseController()
 
 def MouseLeft(x,y):
     if OS == "Windows":
@@ -95,23 +111,6 @@ def Keyboard(button, duration):
         pynputkeyboard.press(button)
         time.sleep(duration)
         pynputkeyboard.release(button)
-    
-
-
-
-
-# Constants:
-CYCLE_INTERVAL = 60       # Cycle interval in seconds (must be within 1m-19m and factor of 60, 1m is recomended)
-STOP_DISTANCE = 5 # Stop distance in your units selected ingame
-WEBHOOK_INTERVAL = 30 * 60 # Webhook interval in seconds, set to 10m minimum
-STEERING_MULTIPLIER = 1.6 # Steering multiplier, keep close to 1 and don't exceed 3. Use bigger multipliers for slower-turning ships
-WEBHOOK_URL = "https://discord.com/api/webhooks/1349420294590435438/qwXHKrXUB49xsxvC9G4y2R3QjAwY6Q6C-oe9gac02ZX5tGt2tFiZ4-lqH3184cSx9raf" # your webhook URL for updates
-
-# --------------------------------------------------
-# 2. Initialize EasyOCR Reader
-# --------------------------------------------------
-reader = easyocr.Reader(['en'], gpu=False) # Change to true if needed, only compatible with some GPUs
-
 # --------------------------------------------------
 # 3. Webhook Alert Function (with screenshot on error)
 # --------------------------------------------------
@@ -146,24 +145,7 @@ def capture_and_process_screenshot(regions):
     return str(text) # return the text variable (list) as a string
 
 # --------------------------------------------------
-# 5. Extracting the Distance Value
-# --------------------------------------------------
-def extract_distance(ocr_text): 
-    
-    text = ocr_text
-
-    matches = re.findall(r"\b\d+\b", text)  # Find all numbers
-
-    if len(matches) == 3: #If there are 3 nums (sometimes distance wasn't showing)
-        second_number = int(matches[1])  # Get the second number
-        return second_number  # Returns the second number (distance)
-    else: # If there aren't 3 nums (distance occasionally didn't show)
-       return None # returns nothing
-    
-    logging.info("Distance: {second_number}")
-
-# --------------------------------------------------
-# 6. Extract Bearing Values for AutoSteer
+# 5. Extract Bearing Values for AutoSteer
 # --------------------------------------------------
 def extract_target_bearing(ocr_text):
 
@@ -187,7 +169,7 @@ def extract_current_bearing(ocr_text):
         return last_number # Returns the third number (TRK)
 
 # --------------------------------------------------
-# 7. AutoSteer Function (runs in a separate thread)
+# 6. AutoSteer Function (runs in a separate thread)
 # --------------------------------------------------
 def run_autosteer(ocr_text):
     target = extract_target_bearing(ocr_text) # get target bearing
@@ -224,7 +206,7 @@ def run_autosteer(ocr_text):
         logging.warning("AutoSteer - Target or current bearing not found in OCR text.") # if one of the bearings is none, then we log the error
 
 # --------------------------------------------------
-# 8. Main Application Logic
+# 7. Main Application Logic
 # --------------------------------------------------
 def main():
 
@@ -283,16 +265,6 @@ def main():
             
         threading.Thread(target=run_autosteer, args=(ocr_text,)).start()
 
-        target_dist= extract_distance(ocr_text) # Extract target distance
-
-        if target_dist != None: # If there is a target distance
-            target_dist = int(target_dist)
-            if extract_distance(ocr_text) <= STOP_DISTANCE: # If current distance is less than or equal to stop distance
-                Keyboard("z", 0.1) # Press z for 0.1s to stop the boat
-                send_webhook_alert("Boat has reached destination") #send webhook
-                exit() # Quits the program
-
-
         elapsed_time = time.time() - start_time #find elapsed time
         if elapsed_time >= WEBHOOK_INTERVAL: # if it has been more than specified time for webhook interval
             start_time = time.time() #reset start
@@ -303,7 +275,7 @@ def main():
         logging.info("Cycle complete.")
 
 # --------------------------------------------------
-# 9. Application Entry Point
+# 8. Application Entry Point
 # --------------------------------------------------
 if __name__ == "__main__":
     main()

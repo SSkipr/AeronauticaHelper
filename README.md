@@ -1,86 +1,41 @@
-# 👉 AeronauticaHelper Setup 👈
-This is an application that watches your AFK boat in Aeronautica! You will get a status update with a screenshot via the webhook every 30mins (time can be changed). There is built-in Anti-AFK.
+# 👉 SimpleAeronauticaHelper Setup 👈
+This is an program that watches and pilots your boat in Aeronautica! You will get a status update with a screenshot via the webhook every 30mins (time can be changed). There is also built-in Anti-AFK.
 
 ---
 
 ## 🧾 Functionality
 
-As previously stated, the application will recognize the following and send alerts via the designated webhook with a screenshot every 30mins (time can be changed) and stop the boat when it is within a certain distance from the destination (can be changed)
+As previously stated, the application will recognize the following and send alerts via the designated webhook with a screenshot every 30mins (time can be changed)
 
+**AutoSteer** gets the current bearing and matches it to the destination. Automated keystrokes are then performed to adjust accordingly. 
 
-**AutoSteer** gets the current bearing and matches it to the destination. Automated keystrokes are then performed to adjust accordingly.⭐**Essentially, assuming everything works properly, you will pull out your ship to open sea and come back when you when you see it has reached the destination.**
+**Essentially, assuming everything works properly, you will pull out your ship to open sea and come back when you when you see it has reached the destination.**
 
 
 ---
 
-## 🪟🍎 Installation
+## Installation
 
-**This code is supported by both Windows and MacOS!**
-If you are not using the [compiled version](https://github.com/SSkipr/AeronauticaHelper/releases), you must follow the instructions below (if you have previous Python experience, feel free to skip around):
+### **This code is supported by both Windows and MacOS!**
+
+It is currently untested on Linux.
 
 ### 1. **Python Environment**
 
 - **Python Version:** 
   Make sure you have Python 3.7 or higher installed. You can download it from [python.org](https://www.python.org/downloads/).
 
-### 2. **Installing Dependencies**
 
-Use pip to install the required libraries. In your terminal or command prompt, run:
+### 2. **Configuration**
+ - ####  These variables are at the top of the code. You will need a code/text editor (notepad/textedit will work fine, keep it as a .py) to edit these. There are defaults. The variables are as follows:
 
-```bash
-pip install pyautogui easyocr numpy requests pynupt
-or
-```bash
-py -m pip install pyautogui easyocr numpy requests pynput
-```
+ - **CYLCE_INTERVAL** This determines how often the program will run it's main loop (autosteer and anti-afk) in seconds. There is a maximum of 19m as otherise you will get disconnected for being AFK
 
-### 3. **Project Structure**
+ - **WEBHOOK_INTERVAL** This determines how often a screenshot will be sent to your webhook in seconds
 
-Your project might look like this:
-```
-/AeronauticaHelper
-├── SimpleAeroHelperMain.py    # Contains the application code
-├── log_data.txt         # Log file created by the application
-├── LICENSE.md           # Repo's license
-└── README.md            # (Optional) Documentation for your project
-```
+ - **TURNING_MULTIPLIER** This is multiplied with the base steering speeds. Increase for larger ships but ensure it doesn't auscultate (go back and forth). The boat will reach the target eventually, so this isn't very important
 
-- **SimpleAeroHelperMain.py:**  
-  This file will contain the complete Python code provided. It includes:
-  - Configuration constants.
-  - Functions to capture screenshots, perform OCR, extract the distance, and send updates.
-  - The main loop that ties everything together, running at a fixed interval (or dynamically based on elapsed time).
-
-- **log_data.txt:**  
-  This log file will be created by the application to store timestamps, OCR output, and any messages sent.
-
-
-### 4. **Configuration**
-
-  **Configure settings to your liking in the code (under configuration and logging setup)**
-
-  - CYCLE_INTERVAL  (Cycle interval in seconds. 15-120 secs is recommended)
-
-  - STOP_DISTANCE  (Stop distance in your units selected ingame)
-
-  - WEBHOOK_INTERVAL  (Webhook interval in seconds, set to 10m minimum)
-
-  - STEERING_MULTIPLIER  (Steering multiplier, keep close to 1 and don't exceed 3. Use bigger multipliers for slower-turning ships)
-
-  - WEBHOOK_URL  (your webhook URL for updates)
-
-
-### 5. **Running the Application**
-
-**Run the Code:**  
-   In your terminal or command prompt, navigate to your project directory and run:
-   ```bash
-   python AeroHelperMain.py
-   ```
-
-   You can also open it in a code editor (such as VS code or Pycharm) and run it there
-
-  ---
+ - **WEBHOOK_URL** This is the webhook url for sending screenshots. See [this tutorial](https://www.youtube.com/watch?v=xIZXDdVwNaE). This is optional.
 
 
 ## ☝️ Please Note:
@@ -88,28 +43,15 @@ Your project might look like this:
 
 - It is generally best practice to get a good multiplier in an older server, then save and go AFK in a server in which the server's age is minimal.
 
-- Set up your webhook in a channel/server with only you, as notifications should be set to all messages, which will ping all with access to the channel!
-
-- Some boats turn quicker than others (though it may take longer); they will all reach the target. Customize the `TURNING_MULTIPLIER` to your ship's liking; ensure it doesn't auscultate (go back and forth).
-
-- The script is setup to use the deafult keybinds: A, D, and Z.
-
-- If you enjoy our code, please ⭐ and 👁️ the repo!
+- The script is setup to use the deafult keybinds; A and D.
 
 ---
 
-## 🗣️ Latest Version: 1.0
+## 🗣️ Latest Version: 1.1
+
+### For additional support, DM SSkipr (sskipr) or person 12 (person_number_12) on discord.
 
 
-Enjoy!
+# Aerohelper (V2 at the time of this screenshot) has been cleared by Aeronautica staff.
 
----
-
-
-### Questions or concerns? [DM me on Discord!](https://discord.gg/3adphMca)
-
-
----
-
-# THIS CODE HAS BEEN CLEARED WITH AERONAUTICA STAFF. THIS IS 100% SAFE TO USE.
 ![AeroHelperV2Approved](https://github.com/user-attachments/assets/0778f8ec-c958-479e-938d-5bea5166b56b)
