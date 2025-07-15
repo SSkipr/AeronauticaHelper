@@ -24,20 +24,43 @@ import time
 import re
 import logging
 import pyautogui
-import requests
-import numpy as np
-import easyocr
 import io
 import json
 import threading
 import platform
+import importlib
+import subprocess
+import sys
+
 OS = platform.system()
 logging.info("OS detected as ", OS) # Logging
 
-if OS == "Windows":
-    import pydirectinput
-else:
-    import pynput
+
+
+# --------------------------------------------------
+# 0. Downloading and importing required packages
+# --------------------------------------------------
+required_downloads = ['PyQt5', 'pyautogui', 'numpy', 'easyocr', 'pydirectinput', 'pynput', 'requests']
+missing_imports = []
+
+for library_name in required_downloads:
+    try:
+        importlib.import_module(library_name)
+    except ImportError:
+        missing_imports.append(library_name)
+if missing_imports:
+    for library in missing_imports:
+        subprocess.check_call([sys.executable, "-m", "pip", "install", library])
+
+
+
+import PyQt5
+import pyautogui
+import numpy
+import easyocr
+import pydirectinput
+import pynput 
+import requests
 
 # --------------------------------------------------
 # 1. Configuration and Logging Setup
@@ -58,9 +81,9 @@ def MouseLeft(x,y):
 
 def Keyboard(button, duration):
     if OS == "Windows":
-        pydirectinput.KeyDown(button)
+        pydirectinput.keyDown(button)
         time.sleep(duration)
-        pydirectinput.KeyUp(button)
+        pydirectinput.keyUp(button)
     else:
         pynputkeyboard.press(button)
         time.sleep(duration)
@@ -74,8 +97,8 @@ def Keyboard(button, duration):
 CYCLE_INTERVAL = 60       # Cycle interval in seconds (must be within 1m-19m and factor of 60, 1m is recomended)
 STOP_DISTANCE = 5 # Stop distance in your units selected ingame
 WEBHOOK_INTERVAL = 30 * 60 # Webhook interval in seconds, set to 10m minimum
-STEERING_MULTIPLIER = 1.2 # Steering multiplier, keep close to 1 and don't exceed 3. Use bigger multipliers for slower-turning ships
-WEBHOOK_URL = "WEBHOOK" # your webhook URL for updates
+STEERING_MULTIPLIER = 1.6 # Steering multiplier, keep close to 1 and don't exceed 3. Use bigger multipliers for slower-turning ships
+WEBHOOK_URL = "https://discord.com/api/webhooks/1349420294590435438/qwXHKrXUB49xsxvC9G4y2R3QjAwY6Q6C-oe9gac02ZX5tGt2tFiZ4-lqH3184cSx9raf" # your webhook URL for updates
 
 # --------------------------------------------------
 # 2. Initialize EasyOCR Reader
@@ -110,7 +133,7 @@ def capture_and_process_screenshot(regions):
     text = [] # define the text variable
 
     for screenshot in screenshots: # for every screenshot:
-        image = np.array(screenshot)
+        image = numpy.array(screenshot)
         results = reader.readtext(image) # read the text in screenshot
         text.append(" ".join([res[1] for res in results])) # add the text to the text variable
     return str(text) # return the text variable (list) as a string
@@ -241,8 +264,8 @@ def main():
 
     while True:
 
-        centerX = screen_width/2
-        centerY = screen_height/2
+        centerX = int(round(screen_width/2))
+        centerY = int(round(screen_height/2))
         MouseLeft(centerX, centerY)
 
         ocr_text = capture_and_process_screenshot(regions) # capture screenshot with regions found earlier
