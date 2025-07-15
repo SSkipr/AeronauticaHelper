@@ -32,16 +32,25 @@ import importlib
 import subprocess
 import sys
 
-OS = platform.system()
-logging.info("OS detected as ", OS) # Logging
 
+logging.basicConfig(filename='log_data.txt', level=logging.INFO,
+                    format='%(asctime)s - %(message)s')
+
+OS = platform.system()
+logging.info("OS detected as {OS}") # Logging
 
 
 # --------------------------------------------------
 # 0. Downloading and importing required packages
 # --------------------------------------------------
-required_downloads = ['PyQt5', 'pyautogui', 'numpy', 'easyocr', 'pydirectinput', 'pynput', 'requests']
+required_downloads = ['PyQt5', 'pyautogui', 'numpy', 'easyocr', 'requests']
 missing_imports = []
+
+if OS == "Windows": # if on windows you need pydirecinput
+    required_downloads.append('pydirectinput')
+else: #otherwise you need pynput
+    required_downloads.append('pynput')
+
 
 for library_name in required_downloads:
     try:
@@ -65,8 +74,6 @@ import requests
 # --------------------------------------------------
 # 1. Configuration and Logging Setup
 # --------------------------------------------------
-logging.basicConfig(filename='log_data.txt', level=logging.INFO,
-                    format='%(asctime)s - %(message)s')
 
 from pynput.keyboard import Key, Controller as KeyboardController
 from pynput.mouse import Button, Controller as MouseController
@@ -152,6 +159,8 @@ def extract_distance(ocr_text):
         return second_number  # Returns the second number (distance)
     else: # If there aren't 3 nums (distance occasionally didn't show)
        return None # returns nothing
+    
+    logging.info("Distance: {second_number}")
 
 # --------------------------------------------------
 # 6. Extract Bearing Values for AutoSteer
@@ -252,6 +261,8 @@ def main():
         print("You're not on a supported resolution, the supported resolutions are: 4k, 1440p, 1080p 1440x900 (macbook screens) and 720p. Please rerun this program when you have one of those resolutions selected") 
         exit() # Close the program
 
+    centerX = int(round(screen_width/2)) # Get screen centers for later so we don't have to keep doing the operation
+    centerY = int(round(screen_height/2))
     
     print("Aeronautica Helper v2")
     time.sleep(1)
@@ -264,8 +275,6 @@ def main():
 
     while True:
 
-        centerX = int(round(screen_width/2))
-        centerY = int(round(screen_height/2))
         MouseLeft(centerX, centerY)
 
         ocr_text = capture_and_process_screenshot(regions) # capture screenshot with regions found earlier
