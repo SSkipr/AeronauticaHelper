@@ -1,6 +1,6 @@
 # 👉 SimpleAeronauticaHelper Setup 👈
 This is an program that watches and pilots your boat in Aeronautica! You will get a status update with a screenshot via the webhook every 30mins (time can be changed). There is also built-in Anti-AFK.
-
+For more features, check out the [main branch](https://github.com/SSkipr/AeronauticaHelper). This branch has only basic autopilot and webhook functionality.
 ---
 
 ## 🧾 Functionality
@@ -52,7 +52,7 @@ It is currently untested on Linux.
 ---
 
 ## 🗣️ Latest Version: 1.1
-
+Added full Windows support, auto-install of required packages, removed auto-stopping and more
 
 ### For additional support, DM SSkipr (sskipr) or person 12 (person_number_12) on discord.
 
