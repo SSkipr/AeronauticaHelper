@@ -38,7 +38,9 @@ It is currently untested on Linux.
 
  - **WEBHOOK_URL** This is the webhook url for sending screenshots. See [this tutorial](https://www.youtube.com/watch?v=xIZXDdVwNaE). This is optional.
 
-### 3. **Run the code**
+### 3. **Run the code** 
+
+- On mac you may need to run ''' bash /Applications/Python*/Install\ Certificates.command ''' in a terminal
 
 
 ## ☝️ Please Note:
