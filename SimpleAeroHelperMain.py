@@ -244,7 +244,7 @@ def main():
     centerX = int(round(screen_width/2)) # Get screen centers for later so we don't have to keep doing the operation
     centerY = int(round(screen_height/2))
     
-    print("Aeronautica Helper v1 (Simple)")
+    print("Aeronautica Helper v1.1 (Simple)")
     time.sleep(1)
     print("Navigate to the ROBLOX tab, you have 10 seconds before the program starts")
     time.sleep(10)
