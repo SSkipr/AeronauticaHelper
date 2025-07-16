@@ -40,7 +40,7 @@ It is currently untested on Linux.
 
 ### 3. **Run the code** 
 
-- On mac you may need to run ''' bash /Applications/Python*/Install\ Certificates.command ''' in a terminal
+- On mac you may need to run  ``` bash /Applications/Python*/Install\ Certificates.command ``` in a terminal
 
 
 ## ☝️ Please Note:
