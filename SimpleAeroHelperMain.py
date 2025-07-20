@@ -46,7 +46,7 @@ logging.basicConfig(filename='log_data.txt', level=logging.INFO,
                     format='%(asctime)s - %(message)s')
 
 OS = platform.system()
-logging.info("OS detected as {OS}") # Logging
+logging.info(f"OS detected as {OS}") # Logging
 
 
 # --------------------------------------------------
@@ -83,7 +83,7 @@ else: #otherwise you need pynput
 
 
 
-import PyQt5
+# import PyQt5
 import pyautogui
 import numpy
 import easyocr
@@ -246,7 +246,7 @@ def main():
     centerX = int(round(screen_width/2)) # Get screen centers for later so we don't have to keep doing the operation
     centerY = int(round(screen_height/2))
     
-    print("Aeronautica Helper v2")
+    print("Aeronautica Helper v1.1 (Simple)")
     time.sleep(1)
     print("Navigate to the ROBLOX tab, you have 10 seconds before the program starts")
     time.sleep(10)
