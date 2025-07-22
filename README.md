@@ -1,6 +1,7 @@
 # 👉 SimpleAeronauticaHelper Setup 👈
-This is an program that watches and pilots your boat in Aeronautica! You will get a status update with a screenshot via the webhook every 30mins (time can be changed). There is also built-in Anti-AFK.
-For more features, check out the [main branch](https://github.com/SSkipr/AeronauticaHelper). This branch has only basic autopilot and webhook functionality.
+This is an program that watches and pilots your boat in Aeronautica! You will get a status update with a screenshot via the webhook. There is also built-in Anti-AFK.
+
+#### For more features, check out the [main branch](https://github.com/SSkipr/AeronauticaHelper). This branch has only basic autopilot and webhook functionality.
 ---
 
 ## 🧾 Functionality
@@ -13,7 +14,7 @@ As previously stated, the application will recognize the following and send aler
 
 ---
 
-## Installation
+## Installation/Setup
 
 
 ### **This code is supported by both Windows and MacOS!**
@@ -37,6 +38,11 @@ It is currently untested on Linux.
  - **TURNING_MULTIPLIER** This is multiplied with the base steering speeds. Increase for larger ships but ensure it doesn't auscultate (go back and forth). The boat will reach the target eventually, so this isn't very important
 
  - **WEBHOOK_URL** This is the webhook url for sending screenshots. See [this tutorial](https://www.youtube.com/watch?v=xIZXDdVwNaE). This is optional.
+
+
+### 3 **Ingame Preperation**
+
+- You will need a boat job active, pull out to open seas with a straight route and point in the general direction of your destination
 
 ### 3. **Run the code** 
 
@@ -62,3 +68,5 @@ Added full Windows support, auto-install of required packages, removed auto-stop
 # Aerohelper (V2 at the time of this screenshot) has been cleared by Aeronautica staff.
 
 ![AeroHelperV2Approved](https://github.com/user-attachments/assets/0778f8ec-c958-479e-938d-5bea5166b56b)
+
+#### Currently 4k support has been removed, it should be added back ASAP
