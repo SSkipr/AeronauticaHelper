@@ -68,5 +68,3 @@ Added full Windows support, auto-install of required packages, removed auto-stop
 # Aerohelper (V2 main branch at the time of this screenshot) has been cleared by Aeronautica staff.
 
 ![AeroHelperV2Approved](https://github.com/user-attachments/assets/0778f8ec-c958-479e-938d-5bea5166b56b)
-
-#### 4k support has been temporarily removed. It will be back ASAP

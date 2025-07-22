@@ -214,12 +214,18 @@ def main():
 
     # Region finding, used to capture screenshots later:
 
+#   EXAMPLE CODE
 #   if screen_height == 2160: # If 4k:
 #       regions = [
-#           (X_top-left, Y_top-left, X_Diff_bottom-right, Y_Diff_bottom-right), # Dest Bearing Capture
-#           (X_top-left, Y_top-left, X_Diff_bottom-right, Y_Diff_bottom-right)  # Current Bearing (TRK) Capture
-#       ] 
-    if screen_height == 900: # if 16:10 (macbook display)
+#           (X_top-left, Y_top-left, X_Diff_bottom-right_from_top-left, Y_Diff_bottom-right_from_top-left), # Dest Bearing Capture
+#           (X_top-left, Y_top-left, X_Diff_bottom-right_from_top-left, Y_Diff_bottom-right_from_top-left)
+
+    if screen_height == 2160: # If 4k:
+        regions = [
+            (1860, 127, 20, 13), # Dest Bearing Capture
+            (520, 1612, 25, 13)  # Current Bearing (TRK) Capture
+        ]
+    elif screen_height == 900: # if 16:10 (macbook display)
         regions = [
         (207, 665, 26, 15), # Dest Bearing + Dest distance Capture
         (663, 125, 20, 14)  # Current Bearing Capture     
