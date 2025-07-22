@@ -42,9 +42,9 @@ It is currently untested on Linux.
 
 ### 3 **Ingame Preperation**
 
-- You will need a boat job active, pull out to open seas with a straight route and point in the general direction of your destination
+- You will need a boat job active. Then just pull out to open seas with a straight route and point in the general direction of your destination
 
-### 3. **Run the code** 
+### 4. **Run the code** 
 
 - On mac you may need to run  ``` bash /Applications/Python*/Install\ Certificates.command ``` in a terminal
 
@@ -65,8 +65,8 @@ Added full Windows support, auto-install of required packages, removed auto-stop
 ### For additional support, DM SSkipr (sskipr) or person 12 (person_number_12) on discord.
 
 
-# Aerohelper (V2 at the time of this screenshot) has been cleared by Aeronautica staff.
+# Aerohelper (V2 main branch at the time of this screenshot) has been cleared by Aeronautica staff.
 
 ![AeroHelperV2Approved](https://github.com/user-attachments/assets/0778f8ec-c958-479e-938d-5bea5166b56b)
 
-#### Currently 4k support has been removed, it should be added back ASAP
+#### 4k support has been temporarily removed. It will be back ASAP
