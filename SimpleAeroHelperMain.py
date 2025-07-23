@@ -46,7 +46,7 @@ logging.basicConfig(filename='log_data.txt', level=logging.INFO,
                     format='%(asctime)s - %(message)s')
 
 OS = platform.system()
-logging.info("OS detected as {OS}") # Logging
+logging.info(f"OS detected as {OS}") # Logging
 
 
 # --------------------------------------------------
@@ -83,7 +83,7 @@ else: #otherwise you need pynput
 
 
 
-import PyQt5
+# import PyQt5
 import pyautogui
 import numpy
 import easyocr
@@ -212,30 +212,38 @@ def main():
 
     screen_width, screen_height = pyautogui.size()
 
+    # Region finding, used to capture screenshots later:
+
+#   EXAMPLE CODE
+#   if screen_height == 2160: # If 4k:
+#       regions = [
+#           (X_top-left, Y_top-left, X_Diff_bottom-right_from_top-left, Y_Diff_bottom-right_from_top-left), # Dest Bearing Capture
+#           (X_top-left, Y_top-left, X_Diff_bottom-right_from_top-left, Y_Diff_bottom-right_from_top-left)
+
     if screen_height == 2160: # If 4k:
         regions = [
-            (int(0.105 * screen_width), int(0.72 * screen_height), int(0.04 * screen_width), int(0.04 * screen_height)),
-            (int(0.475 * screen_width), int(0.055 * screen_height), int(0.02 * screen_width), int(0.03 * screen_height))
-        ] 
+            (1860, 127, 20, 13), # Dest Bearing Capture
+            (520, 1612, 25, 13)  # Current Bearing (TRK) Capture
+        ]
     elif screen_height == 900: # if 16:10 (macbook display)
-       regions = [
-        (int(0.117 * screen_width), int(0.73 * screen_height), int(0.06 * screen_width), int(0.04 * screen_height)), # Dest Bearing + Dest distance Capture
-        (int(0.45 * screen_width), int(0.13 * screen_height), int(0.04 * screen_width), int(0.03 * screen_height))  # Current Bearing Capture     
+        regions = [
+        (207, 665, 26, 15), # Dest Bearing + Dest distance Capture
+        (663, 125, 20, 14)  # Current Bearing Capture     
         ]   
     elif screen_height == 1440: # If 1440p:
         regions = [
-            (int(0.105 * screen_width), int(0.73 * screen_height), int(0.04 * screen_width), int(0.04 * screen_height)),
-            (int(0.47 * screen_width), int(0.08 * screen_height), int(0.02 * screen_width), int(0.03 * screen_height))
+            (341, 1071, 23, 15), # Dest Bearing Capture
+            (1221, 122, 20, 15)  # Current Bearing (TRK) Capture
         ]  
     elif screen_height == 1080: # If 1080p:
         regions = [
-            (int(0.105 * screen_width), int(0.73 * screen_height), int(0.04 * screen_width), int(0.04 * screen_height)),
-            (int(0.455 * screen_width), int(0.1 * screen_height), int(0.035 * screen_width), int(0.03 * screen_height))
+            (252, 803, 24, 11), # Dest Bearing + Dest distance Capture
+            (900, 125, 20, 14)  # Current Bearing (TRK) Capture
         ] 
     elif screen_height == 720: # If 720p:
         regions = [
-            (int(0.105 * screen_width), int(0.74 * screen_height), int(0.04 * screen_width), int(0.04 * screen_height)),
-            (int(0.425 * screen_width), int(0.17 * screen_height), int(0.045 * screen_width), int(0.03 * screen_height))
+            (161, 530, 23, 12), # Dest Bearing + Dest distance Capture
+            (581, 125, 21, 11)  # Current Bearing (TRK) Capture
         ]
     else: # If not on any of the supported resolutions:
         print("You're not on a supported resolution, the supported resolutions are: 4k, 1440p, 1080p 1440x900 (macbook screens) and 720p. Please rerun this program when you have one of those resolutions selected") 
