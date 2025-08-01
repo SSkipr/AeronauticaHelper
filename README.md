@@ -1,3 +1,6 @@
+⚠️ **AeroHelper has (probably) reached its end of life support. Thank you guys so much for everything. 🫡**
+
+
 # <img src="https://github.com/user-attachments/assets/5dd9d0a5-c24b-4b94-9afa-a9692a72e46f" width="25" height="25" alt="AeroHelperLogo" /> AeronauticaHelper
 
 ## 🚀 Introduction
@@ -228,12 +231,6 @@ If you find this tool useful:
 ## 📈 Roadmap
 
 - AI Plane Pathfinding (~v4)
-
----
-
-# Version 3 had been cleared with Aeronautica Staff, specifically the Lead Developer, Rice, and an Administrator, Refi
-<img width="1934" height="1049" alt="Screenshot 2025-07-29 112804" src="https://github.com/user-attachments/assets/c5eb7878-44c9-4e86-9337-edc4b75bbbd8" />
-
 
 ---
 
