@@ -194,8 +194,8 @@ Or from your code editor (IDLE, VS Code, etc.)
 
 ## 🙋 FAQ
 
-Visit our dedicated [help page](https://aeronautica-helper.vercel.app/help) for help regarding anything AeroHelper related.
-
+Visit our dedicated [help page](https://aeronautica-helper.vercel.app/help) for help regarding anything AeroHelper related. 
+If it is an installation issue, I recommend consulting ChatGPT as it is extremely helpful and, unlike me, responds instantly.
 ---
 
 ## 📡 Anonymous Data Sharing (Optional)
