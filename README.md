@@ -12,9 +12,6 @@ This is not an exploit, nor malware. It's fully **open source**, and functions b
 - Processing it with **OCR**
 - Extracting values using **regex**
 - Simulating **human-like mouse and keyboard actions**
-
-Furthermore, this is [approved](https://github.com/SSkipr/AeronauticaHelper/tree/Standard?tab=readme-ov-file#version-3-has-been-cleared-with-aeronautica-staff-specifically-the-lead-developer-rice) by Aeronautica's Lead Developer, Rice
-
 ---
 
 ## 🧾 Features
@@ -23,7 +20,7 @@ Furthermore, this is [approved](https://github.com/SSkipr/AeronauticaHelper/tree
 
 Boat AutoPilot allows you to AFK full job cycles by:
 - Refueling
-- Performing refresh maintenance
+- Performing turnaround maintenance
 - Accepting the highest-paying job
 - Starting the boat
 - Steering the ship
@@ -36,12 +33,12 @@ It currently supports select routes between airports that allow straight-line na
 **Long-Haul:**
 - Leovetsk ⇄ Tikaranto
 - Leovetsk ⇄ Auchenburgh
-- Eisenhardt Municipal ⇄ Tikaranto
 - Eisenhardt Municipal ⇄ Auchenburgh
 - Nordspyd ⇄ Norman
 - Nordspyd ⇄ Udyanapura
 - Kapa ⇄ Hipe
 - Umibutsu ⇄ Hipe
+- Tenera Palm ⇄ Nordspyd
 
 **Express:**
 - Leovetsk ⇄ Kitesboro
@@ -107,7 +104,7 @@ Critical alerts get an `@everyone` ping. Optional debug alerts can be toggled in
 
 ---
 
-## 🛠️ Installation Guide
+## 🛠️ Installation Guide (or [>> Download <<](https://github.com/SSkipr/AeronauticaHelper/releases) the compiled version)
 
 ### ✅ Supported OS:
 - Windows
@@ -144,17 +141,32 @@ Your folder should look like:
 ```
 
 ### 4️⃣ Running the App
-In terminal/cmd:
+**If you have previous experience running Python files, just run ```app.py```, if not:**
 
-```bash
-python app.py
-```
+Right click ```app.py``` and select 'Edit with Python IDE'
 
-Or from your code editor (IDLE, VS Code, etc.)
+At the top of the newly opened window, click 'Run'
+
+Then click 'Run Module'
 
 ---
 
-## 🆕 Version 3.5 Highlights
+## 🆕 Version 3.6 Highlights
+- **Fixed:**
+  - Auchenburgh AutoPilot spelling bug
+  - Fuel extraction regex bug  
+  - Clicking 'End Sail' on red bug
+  - Different OS language issues (?)
+  - Webhook notifications bug
+  - Waypoint locking (targets other than DEST) bug (still waiting for Fly to [fix](https://github.com/SSkipr/AeronauticaHelper/issues/10) the in-game bug though...)
+  - UI performance bug
+  - Import minimal libraries
+
+ - Removed Eisenhardt Municipal ⇄ Tikaranto Boat AutoPilot Route
+
+
+
+### Version 3.5 Highlights
 - 💥 Airship AutoPilot
   - With customizable Altitude & Fuel Percentage
 - 👁️ New OCRs (hopefully this puts all the OCR errors to rest!)
@@ -213,7 +225,8 @@ Used only for **bug reports and troubleshooting.** You may be contacted (via you
 
 💻 [AeroHelper Website](https://aeronautica-helper.vercel.app/)
 
-🚢 [Boat AutoPilot Map](https://github.com/user-attachments/assets/a71d624d-6d2a-4114-9e3b-8c91bcfdafeb)
+🚢 [Boat AutoPilot Map](https://github.com/user-attachments/assets/707a9f5d-f00a-4271-9bce-3adf071a4e04)
+
 
 ---
 
