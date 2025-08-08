@@ -18,7 +18,7 @@ oo     .d8P oo     .d8P  888 `88b.   888   888   888  888
                                                                                                                     
 https://aeronautica-helper.vercel.app
 https://github.com/SSkipr/AeronauticaHelper
-Version 3.5
+Version 3.6
 '''
 
 import importlib
@@ -40,7 +40,6 @@ import random
 import uuid
 import psutil
 import pygetwindow as gw
-import torch
 import gc
 
 from PyQt5.QtWidgets import QMessageBox
@@ -58,30 +57,58 @@ from winsdk.windows.storage import StorageFile
 from winsdk.windows.storage.streams import RandomAccessStreamReference
 from pynput.keyboard import Key, Controller as KeyboardController
 from pynput.mouse import Button, Controller as MouseController
-from doctr.io import DocumentFile
-from doctr.models import ocr_predictor
 
-VERSION = "3.5"
+try:
+    from torch import cuda
+    torch_available = True
+except ImportError:
+    torch_available = False
+    logging.warning("PyTorch not available - memory cleanup will be limited")
+
+
+doctr_imports_loaded = False
+DocumentFile = None
+ocr_predictor = None
+
+def _load_doctr_imports():
+    """Dynamically load DocTR imports only when needed to reduce startup time and compilation size"""
+    global doctr_imports_loaded, DocumentFile, ocr_predictor
+    
+    if not doctr_imports_loaded:
+        try:
+            logging.info("Loading DocTR dependencies dynamically...")
+            from doctr.io import DocumentFile as _DocumentFile
+            from doctr.models import ocr_predictor as _ocr_predictor
+            
+            DocumentFile = _DocumentFile
+            ocr_predictor = _ocr_predictor
+            doctr_imports_loaded = True
+            logging.info("DocTR dependencies loaded successfully")
+            
+        except ImportError as e:
+            logging.error(f"[!] Failed to load DocTR dependencies: {str(e)}")
+            raise ImportError(f"DocTR is required but not available: {str(e)}")
+
+VERSION = "3.6"
 AIRPORT_ROUTES = {
     "leovetsk international airport": [
         "tikaranto international airport",
-        "auchenburgh international airport"
+        "auchenburgh airport"
     ],
     "tikaranto international airport": [
         "leovetsk international airport",
-        "eisenhardt municipal airport",
     ],
-    "auchenburgh international airport": [
+    "auchenburgh airport": [
         "leovetsk international airport",
         "eisenhardt municipal airport"
     ],
     "eisenhardt municipal airport": [
-        "tikaranto international airport",
-        "auchenburgh international airport"
+        "auchenburgh airport"
     ],
     "nordspyd arctic airfield": [
         "norman international airport",
-        "udyanapura merlani international airport"
+        "udyanapura merlani international airport",
+        "tenera palm airfield"
     ],
     "norman international airport": [
         "nordspyd arctic airfield"
@@ -98,6 +125,9 @@ AIRPORT_ROUTES = {
     "hipe airport": [
         "kapa airportt",
         "umibutsu international airport"
+    ],
+    "tenera palm airfield": [
+        "nordspyd arctic airfield"
     ],
 }
 AIRSHIP_ROUTES = {
@@ -205,7 +235,38 @@ def load_config():
             logging.info(f"Loading configuration from existing file '{DATA_FILE}' (size: {file_size} bytes)")
             with open(DATA_FILE, "r") as f:
                 config_data = json.load(f)
-            logging.info(f"Configuration loaded successfully with {len(config_data)} settings from '{DATA_FILE}'")
+            
+            numeric_fields = [
+                "ship_top_speed", "stop_distance", "cycle_interval", 
+                "leeway", "multiplier", "airship_cruising_altitude", "airship_throttle_level"
+            ]
+            
+            cleaned_values = 0
+            for field in numeric_fields:
+                if field in config_data:
+                    original_value = config_data[field]
+                    try:
+                        float_value = float(original_value)
+                        
+                        if float_value == int(float_value):
+                            cleaned_value = int(float_value)
+                        else:
+                            cleaned_value = round(float_value, 3)
+                            if isinstance(cleaned_value, float):
+                                cleaned_value = float(f"{cleaned_value:g}")
+
+                        if str(cleaned_value) != str(original_value):
+                            config_data[field] = cleaned_value
+                            cleaned_values += 1
+                            logging.info(f"Cleaned decimal value for '{field}': {original_value} -> {cleaned_value}")
+                        
+                    except (ValueError, TypeError) as e:
+                        logging.warning(f"[!] Could not clean decimal value for '{field}': {original_value} ({str(e)})")
+            
+            if cleaned_values > 0:
+                logging.info(f"Configuration loaded with {cleaned_values} decimal values cleaned from '{DATA_FILE}'")
+            else:
+                logging.info(f"Configuration loaded successfully with {len(config_data)} settings from '{DATA_FILE}'")
             return config_data
         except Exception as e:
             logging.error(f"[!] Configuration load operation failed for file '{DATA_FILE}': {str(e)}, returning empty configuration")
@@ -310,8 +371,8 @@ def capture_and_process_screenshot():
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
 
-    logging.info(f"Initiating Windows OCR processing with language preference: FirstFromAvailableLanguages")
-    ocr_result: OcrResult = loop.run_until_complete(_run_ocr_async(temp_file, "FirstFromAvailableLanguages"))
+    logging.info(f"Initiating Windows OCR processing with English language (en-US)")
+    ocr_result: OcrResult = loop.run_until_complete(_run_ocr_async(temp_file))
 
     lines_data = []
     full_text_lines = []
@@ -365,7 +426,7 @@ def capture_and_process_screenshot():
 
     return full_text, lines_data
 
-async def _run_ocr_async(path: str, lang_tag: str) -> OcrResult | None:
+async def _run_ocr_async(path: str, lang_tag: str = "en-US") -> OcrResult | None:
     try:
         logging.info(f"Starting asynchronous OCR processing for file: '{path}' with language setting: '{lang_tag}'")
         file = await StorageFile.get_file_from_path_async(path)
@@ -383,10 +444,21 @@ async def _run_ocr_async(path: str, lang_tag: str) -> OcrResult | None:
                 logging.info(f"Attempting to create OCR engine from user profile languages")
                 engine = OcrEngine.try_create_from_user_profile_languages()
                 if not engine:
-                    logging.info("[!] User profile languages unavailable, attempting first available system language")
+                    logging.info("[!] User profile languages unavailable, falling back to English (en-US)")
+                    english_lang = Language("en-US")
+                    if OcrEngine.is_language_supported(english_lang):
+                        engine = OcrEngine.try_create_from_language(english_lang)
+                    else:
+                        logging.warning("[!] English (en-US) not supported, trying first available system language")
             except Exception as e_profile_lang:
-                logging.warning(f"[!] User profile language OCR engine creation failed: {str(e_profile_lang)}, trying system languages")
-            
+                logging.warning(f"[!] User profile language OCR engine creation failed: {str(e_profile_lang)}, falling back to English")
+                try:
+                    english_lang = Language("en-US")
+                    if OcrEngine.is_language_supported(english_lang):
+                        engine = OcrEngine.try_create_from_language(english_lang)
+                except Exception:
+                    pass
+
             if not engine:
                 available_langs = OcrEngine.get_available_recognizer_languages()
                 if available_langs:
@@ -403,7 +475,17 @@ async def _run_ocr_async(path: str, lang_tag: str) -> OcrResult | None:
                 engine = OcrEngine.try_create_from_language(language)
             else:
                 logging.error(f"[!] Specified language '{lang_tag}' is not supported for OCR on this system")
-                return None
+                if lang_tag != "en-US":
+                    logging.info("Attempting fallback to English (en-US)")
+                    english_lang = Language("en-US")
+                    if OcrEngine.is_language_supported(english_lang):
+                        engine = OcrEngine.try_create_from_language(english_lang)
+                        logging.info("Successfully created OCR engine with English fallback")
+                    else:
+                        logging.error("[!] English fallback also not supported")
+                        return None
+                else:
+                    return None
         
         if not engine:
             logging.error(f"[!] Failed to create OCR engine for language configuration: '{lang_tag}'")
@@ -490,6 +572,7 @@ def _run_doctr_ocr_on_left_screen():
     global doctr_model
     if doctr_model is None:
         logging.info("Doctr OCR model not loaded, initializing model for left screen analysis")
+        _load_doctr_imports()
         doctr_model = ocr_predictor(pretrained=True)
         logging.info("Doctr OCR model initialization completed for left screen processing")
 
@@ -570,21 +653,28 @@ def extract_target_bearing(ocr_text):
         except ValueError as e:
             logging.warning(f"[!] Destination bearing value conversion failed: {str(e)} (matched: '{dest_match.group(1)}')")
     
-    pattern = r"(?!clear|trk|hdg)(?!\b\d{1,2}nm\b)(?!\d{3,6}(?=\s?mb\b))(\b[a-z]{4,5}\b)\s+(\d{3})"
-    pattern_match = re.search(pattern, ocr_text_lower)
-    if pattern_match:
-        try:
-            dest_name = pattern_match.group(1)
-            target_bearing = int(pattern_match.group(2))
-            
-            if dest_name in ["knots", "games", "windy"]:
-                logging.warning(f"[!] Target bearing extracted but destination name indicates OCR error: '{dest_name}' -> {target_bearing}°")
-                return "OCR Error", target_bearing
-            else:
-                logging.info(f"Target bearing extracted successfully: destination '{dest_name}' at {target_bearing}° (matched: '{pattern_match.group(0)}')")
-                return dest_name, target_bearing
-        except ValueError as e:
-            logging.warning(f"[!] Target bearing value conversion failed for pattern match: {str(e)} (matched: '{pattern_match.group(2)}')")
+    patterns = [
+        (r"([a-z]{5})\s*(\d{3})", "5-letter location pattern"),
+        (r"([a-z]{3})\s*(\d{3})", "3-letter location pattern"),
+        (r"(\d{2,3})\s*(\d{3})", "2-3 digit prefix pattern")
+    ]
+    
+    for i, (pattern, description) in enumerate(patterns):
+        pattern_match = re.search(pattern, ocr_text_lower)
+        if pattern_match:
+            try:
+                prefix = pattern_match.group(1)
+                target_bearing = int(pattern_match.group(2))
+                
+                if prefix in ["knots", "games", "windy", "clear", "track", "heading"]:
+                    logging.warning(f"[!] Target bearing extracted but prefix indicates OCR error: '{prefix}' -> {target_bearing}°")
+                    continue
+                
+                logging.info(f"Target bearing extracted using pattern {i+1} ({description}): prefix '{prefix}' at {target_bearing}° (matched: '{pattern_match.group(0)}')")
+                return prefix, target_bearing
+            except ValueError as e:
+                logging.warning(f"[!] Target bearing value conversion failed for pattern {i+1}: {str(e)} (matched: '{pattern_match.group(2)}')")
+                continue
 
     logging.warning(f"[!] No target bearing could be extracted from Doctr OCR text")
     return None
@@ -653,16 +743,24 @@ def extract_fuel_level(ocr_text):
     logging.info(f"Doctr OCR text for fuel level analysis (length: {len(doctr_ocr_text)} characters): {doctr_ocr_text}")
 
     ocr_text_lower = doctr_ocr_text.lower()
-    match = re.search(r"fuel\s+([\d.,]+)\s*%", ocr_text_lower)
-    if match:
-        try:
-            fuel_percentage = float(match.group(1).replace(",", "."))
-            logging.info(f"Fuel level extracted successfully: {fuel_percentage}% (matched: '{match.group(0)}')")
-            return fuel_percentage
-        except ValueError as e:
-            logging.warning(f"[!] Fuel level value conversion failed: {str(e)} (matched: '{match.group(1)}')")
+    
+    patterns = [
+        (r"fuel\s*:\s*([\d.,]+)\s*%", "fuel with colon separator"),
+        (r"fuel\s+([\d.,]+)\s*%", "fuel with space separator")
+    ]
+    
+    for i, (pattern, description) in enumerate(patterns):
+        match = re.search(pattern, ocr_text_lower)
+        if match:
+            try:
+                fuel_percentage = float(match.group(1).replace(",", "."))
+                logging.info(f"Fuel level extracted successfully using pattern {i+1} ({description}): {fuel_percentage}% (matched: '{match.group(0)}')")
+                return fuel_percentage
+            except ValueError as e:
+                logging.warning(f"[!] Fuel level value conversion failed for pattern {i+1}: {str(e)} (matched: '{match.group(1)}')")
+                continue
 
-    logging.warning(f"[!] No fuel level could be extracted from Doctr OCR text")
+    logging.warning(f"[!] No fuel level could be extracted from Doctr OCR text using any of the {len(patterns)} patterns")
     return None
 
 def extract_current_bearing(ocr_text):
@@ -670,6 +768,7 @@ def extract_current_bearing(ocr_text):
     logging.info(f"Extracting current bearing from OCR text (length: {len(ocr_text)} characters): {ocr_text}")
 
     patterns = [
+        (r"t\s*r\s*k\s*:\s*(\d{3})", "TRK pattern with colon separator"),
         (r"t\s*r\s*k\s+(\d{3})", "standard TRK pattern with space"),
         (r"t\s*r\s*k\s*(\d{3})", "TRK pattern without required space"),
         (r"t\s*r\s*k\s*\d?\s*(\d{3})", "TRK pattern with OCR error digits"),
@@ -697,7 +796,9 @@ def alert(message, include_screenshot=False, verbose_mode=False):
     config = load_config()
     webhook_url = config.get("webhook_url", "")
     
-    if message.startswith("[!]"):
+    is_critical_alert = message.startswith("[!]")
+    
+    if is_critical_alert:
         consecutive_alerts += 1
         message = "@everyone " + message
         logging.error(f"Critical alert triggered (consecutive count: {consecutive_alerts}): {message}")
@@ -762,9 +863,10 @@ def alert(message, include_screenshot=False, verbose_mode=False):
         logging.warning(f"[*] Webhook URL not configured, skipping webhook notification: {message}")
         return False
     
-    if not verbose_mode and not message.startswith("[!]"):
-        logging.debug(f"Verbose mode disabled, skipping non-critical webhook notification: {message}")
+    if not verbose_mode and not is_critical_alert:
+        logging.warning(f"Verbose mode disabled, skipping non-critical webhook notification: {message}")
         return False
+    
     
     payload = {"content": message}
     try:
@@ -842,15 +944,16 @@ def restart_all_engines():
         memory_before = psutil.virtual_memory().percent
         logging.info(f"System memory usage before cleanup: {memory_before}%")
         
-        if 'torch' in sys.modules:
+        if torch_available and 'torch' in sys.modules:
             logging.info("Clearing PyTorch CUDA cache")
-            torch.cuda.empty_cache()
+            cuda.empty_cache()
             logging.info("PyTorch CUDA cache cleared successfully")
         
         logging.info("Executing garbage collection")
         gc.collect()
         
         logging.info("Reinitializing DocTR OCR model with pretrained weights")
+        _load_doctr_imports()
         doctr_model = ocr_predictor(pretrained=True)
         logging.info("Doctr OCR model reinitialization completed successfully")
         
@@ -926,6 +1029,7 @@ def _run_doctr_ocr_on_top_right_quadrant():
     global doctr_model
     if doctr_model is None:
         logging.info("Doctr OCR model not loaded, initializing model for time detection in top-right quadrant")
+        _load_doctr_imports()
         doctr_model = ocr_predictor(pretrained=True)
         logging.info("Doctr OCR model initialization completed for time detection")
 
@@ -1009,6 +1113,7 @@ def _run_doctr_ocr_on_top_half():
     global doctr_model
     if doctr_model is None:
         logging.info("Doctr OCR model not loaded, initializing model for bearing detection in top half")
+        _load_doctr_imports()
         doctr_model = ocr_predictor(pretrained=True)
         logging.info("Doctr OCR model initialization completed for bearing detection")
 

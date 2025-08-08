@@ -18,7 +18,7 @@ oo     .d8P oo     .d8P  888 `88b.   888   888   888  888
                                                                                                                     
 https://aeronautica-helper.vercel.app
 https://github.com/SSkipr/AeronauticaHelper
-Version 3.5
+Version 3.6
 '''
 
 import time
@@ -81,7 +81,7 @@ class AutoPilotThread(QThread):
                 logging.info("[*] End Sail button detected in clickable state (not red), proceeding with click sequence")
                 alert("End Sail button found, attempting to click.", include_screenshot=False)
                 
-                time.sleep(7)
+                time.sleep(30)
 
                 click_center(end_sail_button_coords)
                 time.sleep(1)
@@ -111,11 +111,13 @@ class AutoPilotThread(QThread):
                     keyboard.press('w')
                     time.sleep(5 * self.multiplier)
                     keyboard.release('w')
+                    time.sleep(15)
                     
                     logging.info("Stopping vehicle to re-evaluate position and distance")
                     keyboard.press('z')
                     time.sleep(0.5)
                     keyboard.release('z')
+                    time.sleep(15)
                 else:
                     if current_distance > previous_distance:
                         logging.warning(f"[*] Overshot the dock. Previous: {previous_distance}, Current: {current_distance}. Moving backward.")
@@ -123,12 +125,14 @@ class AutoPilotThread(QThread):
                         keyboard.press('z')
                         time.sleep(15 * self.multiplier)
                         keyboard.release('z')
+                        time.sleep(15)
                     else:
                         logging.info(f"[*] Getting closer. Previous: {previous_distance}, Current: {current_distance}. Moving forward.")
                         alert("Approaching dock, moving forward.", include_screenshot=False)
                         keyboard.press('w')
                         time.sleep(5 * self.multiplier)
                         keyboard.release('w')
+                        time.sleep(15)
 
                 previous_distance = current_distance
                 time.sleep(3)
@@ -157,6 +161,7 @@ class AutoPilotThread(QThread):
         
         def find_and_click_text(target_text, partial_match=False):
             ocr_text, ocr_results = capture_and_process_screenshot()
+            logging.info(f"Checking for '{target_text}' with OCR: {ocr_text}")
             target_text_lower = target_text.lower()
             for res in ocr_results:
                 if len(res) > 1 and isinstance(res[1], str):
@@ -170,6 +175,7 @@ class AutoPilotThread(QThread):
 
         def check_refuel():
             ocr_text, ocr_results = _run_doctr_ocr_on_left_screen()
+            logging.info(f"Checking for 'refuel' button with OCR: {ocr_text}")
             for res in ocr_results:
                 if len(res) > 1 and isinstance(res[1], str):
                     if "refuel" in res[1].lower():
@@ -190,6 +196,7 @@ class AutoPilotThread(QThread):
             logging.info("Starting new maintenance sequence using WinRT OCR.")
             
             ocr_text, ocr_results = capture_and_process_screenshot()
+            logging.info(f"Checking for 'your current vehicle' line with OCR: {ocr_text}")
             vehicle_line_text = None
             vehicle_line_coords = None
             for res in ocr_results:
@@ -207,6 +214,7 @@ class AutoPilotThread(QThread):
             time.sleep(1.5)
 
             ocr_text_after_hover, ocr_results_after_hover = capture_and_process_screenshot()
+            logging.info(f"Checking for '$' with OCR: {ocr_text_after_hover}")
             price_coords = None
             price_text = None
             for res in ocr_results_after_hover:
@@ -223,8 +231,8 @@ class AutoPilotThread(QThread):
             click_center(price_coords)
             time.sleep(2)
 
-            logging.info("Looking for 'yes' confirmation with Doctr OCR...")
             _, ocr_results_doctr = _run_doctr_ocr_on_left_screen()
+            logging.info(f"Checking for 'es' with OCR: {_}")
             yes_coords = None
             for res in ocr_results_doctr:
                 if (
@@ -261,8 +269,8 @@ class AutoPilotThread(QThread):
         Aocr_text, Aocr_results = capture_and_process_screenshot()
         
         def click_jobs():
-            logging.info("Looking for 'play' button with Doctr OCR...")
             _, ocr_results_doctr = _run_doctr_ocr_on_left_screen()
+            logging.info(f"Checking for 'play' with OCR: {_}")
             play_coords = None
             for res in ocr_results_doctr:
                 if len(res) > 1 and isinstance(res[1], str) and "play" in res[1].lower():
@@ -277,8 +285,8 @@ class AutoPilotThread(QThread):
             click_center(play_coords)
             time.sleep(1.5)
 
-            logging.info("Looking for 'jobs' button with Doctr OCR after hover...")
             _, ocr_results_doctr_after_hover = _run_doctr_ocr_on_left_screen()
+            logging.info(f"Checking for 'jobs' with OCR: {_}")
             jobs_coords = None
             for res in ocr_results_doctr_after_hover:
                 if len(res) > 1 and isinstance(res[1], str) and "jobs" in res[1].lower():
@@ -533,7 +541,7 @@ class AutoPilotThread(QThread):
     def run(self):
         try:
             time.sleep(5)
-            logging.info(f"[$$] Boat AutoPilot {'final' if self.is_final_phase else 'initial'} phase started")
+            logging.info(f"[$$] AutoPilot {'final' if self.is_final_phase else 'initial'} phase started")
             
             if self.is_final_phase:
                 success = self.final_phase()
@@ -564,16 +572,18 @@ def check_for_end_sail():
                 avg_green = numpy.mean(button_rgb[:, :, 1])
                 avg_blue = numpy.mean(button_rgb[:, :, 2])
                 
-                is_reddish = (avg_red > 1.5 * avg_blue) and (avg_red > 1.5 * avg_green)
+                is_red = avg_red >= 250
+                logging.info(f"End Sail button RGB averages - Red: {avg_red:.1f}, Green: {avg_green:.1f}, Blue: {avg_blue:.1f}. Is red (>=250): {is_red}")
                 
-                if not is_reddish:
+                if not is_red:
+                    logging.info("End Sail button is NOT red - clicking it")
                     click_center(res[0])
                     time.sleep(0.5)
                     click_center(res[0])
-                    logging.info("Clicked 'End Sail' button")
+                    logging.info("Successfully clicked 'End Sail' button")
                     return res[0], False
                 else:
-                    logging.info("'End Sail' button is red (cannot be clicked yet)")
+                    logging.info("End Sail button IS red (cannot be clicked yet) - NOT clicking")
                     return res[0], True
         else:
             logging.warning(f"[!] Skipping malformed OCR result item in check_for_end_sail: {res}")

@@ -18,7 +18,7 @@ oo     .d8P oo     .d8P  888 `88b.   888   888   888  888
                                                                                                                       
 https://aeronautica-helper.vercel.app
 https://github.com/SSkipr/AeronauticaHelper
-Version 3.5
+Version 3.6
 '''
 
 # Main File
@@ -562,8 +562,8 @@ class AeroHelperApp(QWidget):
 
             self.mid_mission_checkbox.setEnabled(self.airship_autopilot_mode or self.boat_autopilot_mode)
 
-            if not self.webhook_logging_enabled:
-                self.webhook_url_input.setDisabled(True)
+            #if not self.webhook_logging_enabled:
+                #self.webhook_url_input.setDisabled(True)
         else:
             self.mid_mission_checkbox.setEnabled(False)
 
@@ -788,15 +788,27 @@ class AeroHelperApp(QWidget):
             self.timer.stop()
             
             if self.boat_autopilot_mode and self.autopilot_thread and self.autopilot_thread.isRunning():
-                self.autopilot_thread.terminate()
-                self.autopilot_thread.wait()
-                self.autopilot_ready = False
-                self.autopilot_final_phase = False
-            
-            logging.info("[*] AeroHelper paused")
-            alert("AeroHelper paused", include_screenshot=False, verbose_mode=self.webhook_logging_enabled)
-            
-            self.set_controls_enabled(True)
+                self.start_button.setEnabled(False)
+                self.start_button.setText('Stopping...')
+                
+                def terminate_thread():
+                    try:
+                        self.autopilot_thread.terminate()
+                        if not self.autopilot_thread.wait(5000):
+                            logging.warning("[!] Autopilot thread termination timed out, forcing quit")
+                            self.autopilot_thread.quit()
+                        
+                        QtCore.QMetaObject.invokeMethod(self, "finalize_pause", 
+                                                       QtCore.Qt.QueuedConnection)
+                    except Exception as e:
+                        logging.error(f"[!] Error terminating autopilot thread: {str(e)}")
+                        QtCore.QMetaObject.invokeMethod(self, "finalize_pause", 
+                                                       QtCore.Qt.QueuedConnection)
+                
+                threading.Thread(target=terminate_thread, daemon=True).start()
+                return
+
+            self.finalize_pause()
             return
         
         try:
@@ -910,7 +922,12 @@ class AeroHelperApp(QWidget):
 
             if self.previous_distance is None:
                 try:
-                    self.cycle_interval = int(float(self.cycle_interval_input.text()) * 60 * 1000)
+                    cycle_interval_minutes = float(self.cycle_interval_input.text())
+                    if cycle_interval_minutes < 0.25:
+                        cycle_interval_minutes = 0.25
+                        logging.warning(f"[!] Cycle interval too low, adjusted to 0.25 minutes (15 seconds) for performance")
+                    
+                    self.cycle_interval = int(cycle_interval_minutes * 60 * 1000)
                     vehicle_top_speed = float(self.ship_speed_input.text())
                     LEEWAY = float(self.leeway_input.text())
                     MULTIPLIER = float(self.multiplier_input.text())
@@ -978,13 +995,7 @@ class AeroHelperApp(QWidget):
                     keyboard.press('e')
                     keyboard.release('e')
                     time.sleep(1)
-                    alert("Mid-mission start: Engine started.", include_screenshot=False)
-
-                    throttle_level = int(self.airship_throttle_input.text())
-                    set_airship_throttle(throttle_level)
-
-                    logging.info(f"Airship throttle set to {throttle_level}%")
-                    alert(f"Airship throttle set to {throttle_level}%.", include_screenshot=False)
+                    alert("Mid-mission start", include_screenshot=False)
 
                     self.autopilot_ready = True
                     self.is_running = True
@@ -1012,6 +1023,25 @@ class AeroHelperApp(QWidget):
             logging.error(f"Error parsing inputs: {error_msg}")
             alert(f"[!] {error_msg}", include_screenshot=False)
             QMessageBox.critical(self, "Error", error_msg)
+
+    @pyqtSlot()
+    def finalize_pause(self):
+        """Finalize the pause operation - called after thread termination completes"""
+        try:
+            self.autopilot_ready = False
+            self.autopilot_final_phase = False
+            
+            self.start_button.setEnabled(True)
+            self.start_button.setText('Resume')
+            self.set_controls_enabled(True)
+            
+            logging.info("[*] AeroHelper paused")
+            alert("AeroHelper paused", include_screenshot=False, verbose_mode=self.webhook_logging_enabled)
+            
+        except Exception as e:
+            logging.error(f"[!] Error in finalize_pause: {str(e)}")
+            self.start_button.setEnabled(True)
+            self.start_button.setText('Resume')
 
     def run_AeroHelper_Logic(self):
         global JUST_RECONNECTED
@@ -1045,16 +1075,22 @@ class AeroHelperApp(QWidget):
             return
             
         try:
+            start_time = time.time()
+            
             ocr_text, ocr_results = capture_and_process_screenshot()
+            
+            ocr_duration = time.time() - start_time
+            if ocr_duration > 10:
+                logging.warning(f"[!] OCR operation took {ocr_duration:.1f} seconds - performance degradation detected")
 
             if self.ocr_error_counter >= 3 and time.time() - self.time_of_last_ocr_refresh > 1000:
                 logging.info("[!] OCR degradation detected. Attempting to refresh OCR engine...")
                 alert("OCR degradation detected. Attempting to refresh OCR engine...", include_screenshot=False)
-                restart_all_engines()
+                threading.Thread(target=restart_all_engines, daemon=True).start()
                 self.ocr_error_counter = 0
                 self.time_of_last_ocr_refresh = time.time()
-                logging.info("OCR engine refreshed successfully.")
-                ocr_text, ocr_results = capture_and_process_screenshot()
+                logging.info("OCR engine refresh initiated in background.")
+                return
 
             throttle_level = extract_throttle_level(ocr_text)
             if throttle_level == 0:
@@ -1214,6 +1250,15 @@ class AeroHelperApp(QWidget):
             logging.error("Error in run_AeroHelper_Logic: " + str(e))
             QMessageBox.critical(self, "Error", "Invalid number format in vehicle speed.")
             self.toggle_logic()
+        except Exception as e:
+            error_msg = f"Unexpected error in main logic: {str(e)}"
+            logging.error(f"[!] {error_msg}")
+            
+            if not hasattr(self, 'last_error_time') or time.time() - self.last_error_time > 60:
+                alert(f"[!] {error_msg}", include_screenshot=False)
+                self.last_error_time = time.time()
+            
+            return
 
     def toggle_quit_on_errors(self, state):
         self.quit_on_errors_enabled = (state == 2)
@@ -1395,7 +1440,7 @@ def run_main_logic(ocr_text, ocr_results, prev_distance, prev_time, start_distan
             if cycle_count % 5 == 0 and movement != 0:
                 eta_hours = (current_distance / movement) / 60
                 completion = (((start_distance - current_distance) / start_distance) * 100) if start_distance and start_distance > 0 else 0
-                alert(f"ETA: {eta_hours:.2f} Hours, {completion:.2f}% Completed", include_screenshot=True, verbose_mode=webhook_logging_enabled)
+                alert(f"{completion:.2f}% Completed", include_screenshot=True, verbose_mode=webhook_logging_enabled)
             
             throttle_str = f", Throttle: {throttle_level}%" if throttle_level is not None else ""
             alert(f"Elapsed: {elapsed:.2f}s | Move: {movement:.2f}nm | Dist: {current_distance}nm{throttle_str}", include_screenshot=False, verbose_mode=webhook_logging_enabled)
@@ -1512,7 +1557,7 @@ def run_autosteer(ocr_text, target_info, current_bearing):
             if first_turn != second_turn:
                 expected_pattern = [first_turn, second_turn] * 4
                 if STEERING_HISTORY == expected_pattern:
-                    alert("[!] Auscultation Detected: The vehicle is turning back and forth rapidly. Please lower the 'Turning Multiplier' to improve stability.", include_screenshot=False)
+                    alert("[!] Auscultation Detected: The vehicle is turning back and forth rapidly. Please lower the 'Turning Multiplier' to improve stability. If you are using an airship, the wind may be affecting stability.", include_screenshot=False)
                     OSCILLATION_ALERT_SENT = True
 
         logging.info(f"AeroHelper AutoSteer - Pressing {key_to_press} for {hold_duration} sec (difference: {diff})")
