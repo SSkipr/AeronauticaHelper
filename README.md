@@ -37,11 +37,12 @@ It is currently untested on Linux.
 
  - **WEBHOOK_INTERVAL** This determines how often a screenshot will be sent to your webhook in seconds
 
-
  - **TURNING_MULTIPLIER** This is multiplied with the base steering speeds. Increase for larger ships but ensure it doesn't auscultate (go back and forth). The boat will reach the target eventually, so this isn't very important
 
  - **WEBHOOK_URL** This is the webhook url for sending screenshots. See [this tutorial](https://www.youtube.com/watch?v=xIZXDdVwNaE). This is optional.
 
+##### An example of configured variables
+ ![configured variables](https://cdn.discordapp.com/attachments/1349769873282175037/1431328076498862191/image.png?ex=68fd03a6&is=68fbb226&hm=9c0c338f9b292529fcdf2e836da63a79f31d2c9b3be92ba5352b5b7804f2571c)
 
 ### 4. **Ingame Preperation**
 
@@ -49,7 +50,7 @@ It is currently untested on Linux.
 
 ### 5. **Run the code** 
 
-- On mac you may need to run  ``` bash /Applications/Python*/Install\ Certificates.command ``` in a terminal
+- On mac you may need to run  ``` bash /Applications/Python*/Install\ Certificates.command ``` in a terminal or you will get a error
 
 
 ## ☝️ Please Note:
