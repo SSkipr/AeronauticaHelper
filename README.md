@@ -21,13 +21,16 @@ As previously stated, the application will recognize the following and send aler
 
 It is currently untested on Linux.
 
+
 ### 1. **Python Environment**
 
 - **Python Version:** 
   Make sure you have Python 3.7 or higher installed. You can download it from [python.org](https://www.python.org/downloads/).
 
+### 2. **Install the program**
+  Either navigate to "SimpleAeroHelperMain.py" and download the raw file, or download [here](https://downgit.github.io/#/home?url=https://github.com/SSkipr/AeronauticaHelper/raw/refs/heads/Simple/SimpleAeroHelperMain.py) and unzip.
 
-### 2. **Configuration**
+### 3. **Configuration**
  - ####  These variables are at the top of the code. You will need a code/text editor (notepad/textedit will work fine, keep it as a .py) to edit these. There are defaults. The variables are as follows:
 
  - **CYLCE_INTERVAL** This determines how often the program will run it's main loop (autosteer and anti-afk) in seconds. There is a maximum of 19m as otherise you will get disconnected for being AFK
@@ -40,11 +43,11 @@ It is currently untested on Linux.
  - **WEBHOOK_URL** This is the webhook url for sending screenshots. See [this tutorial](https://www.youtube.com/watch?v=xIZXDdVwNaE). This is optional.
 
 
-### 3 **Ingame Preperation**
+### 4. **Ingame Preperation**
 
 - You will need a boat job active. Then just pull out to open seas with a straight route and point in the general direction of your destination
 
-### 4. **Run the code** 
+### 5. **Run the code** 
 
 - On mac you may need to run  ``` bash /Applications/Python*/Install\ Certificates.command ``` in a terminal
 
@@ -54,8 +57,9 @@ It is currently untested on Linux.
 
 - It is generally best practice to get a good multiplier in an older server, then save and go AFK in a server in which the server's age is minimal.
 
+- The program is setup to use the deafult keybinds; A and D.
 
-- The script is setup to use the deafult keybinds; A and D.
+- Currently the only supported resolutions are 720p, 1080p, 1440p (2k) and 4k
 
 ---
 
