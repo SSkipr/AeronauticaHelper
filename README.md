@@ -50,8 +50,19 @@ It is currently untested on Linux.
 
 ### 5. **Run the code** 
 
-- On mac you may need to run  ``` bash /Applications/Python*/Install\ Certificates.command ``` in a terminal or you will get a error
+- On mac you may need to run  ``` bash /Applications/Python*/Install\ Certificates.command ``` in a terminal first or you will get a error
 
+---
+
+### **FAQ**
+
+* Q: How does it work?
+
+   A: SimpleAeroHelper works by taking screenshots of the TRK and HDG at the top of the screen, processing them into text then performing inputs if turning is needed. The centre of the screen will occasionally be clicked to avoid being kicked for AFK
+
+* Q: Can I use waypoints?
+
+   A: Theoretically, you will steer towards whatever your target is, however waypoints in boats have known to be glitchy and are solid at sea level, so you may run into problems.
 
 ## ☝️ Please Note:
 
@@ -62,7 +73,7 @@ It is currently untested on Linux.
 
 - Currently the only supported resolutions are 720p, 1080p, 1440p (2k) and 4k
 
----
+
 
 ## 🗣️ Latest Version: 1.1
 Added full Windows support, auto-install of required packages, removed auto-stopping and more
