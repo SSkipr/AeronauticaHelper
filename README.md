@@ -42,7 +42,7 @@ It is currently untested on Linux.
  - **WEBHOOK_URL** This is the webhook url for sending screenshots. See [this tutorial](https://www.youtube.com/watch?v=xIZXDdVwNaE). This is optional.
 
 ##### An example of configured variables
- ![configured variables](https://cdn.discordapp.com/attachments/1349769873282175037/1431328076498862191/image.png?ex=68fd03a6&is=68fbb226&hm=9c0c338f9b292529fcdf2e836da63a79f31d2c9b3be92ba5352b5b7804f2571c)
+ ![configured variables](https://private-user-images.githubusercontent.com/151909246/508157864-912ca5e7-f6af-4e54-bf7f-efb618f13443.png?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3NjE5MDc0MDIsIm5iZiI6MTc2MTkwNzEwMiwicGF0aCI6Ii8xNTE5MDkyNDYvNTA4MTU3ODY0LTkxMmNhNWU3LWY2YWYtNGU1NC1iZjdmLWVmYjYxOGYxMzQ0My5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjUxMDMxJTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI1MTAzMVQxMDM4MjJaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT0zMTZlZjMxYjg2MzAxN2ZmZDNhZTU5ZDkwN2Y5NGFmZDQ3MWFiOTA1YWQxN2M1MDM4NzFlOTc3Yjg5NDM5NjUwJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCJ9.wGC9oD7tu1oZSknx78s7t9FedI0KD6m_iD-Lzjeklg0)
 
 ### 4. **Ingame Preperation**
 
