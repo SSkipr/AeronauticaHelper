@@ -83,12 +83,11 @@ else: #otherwise you need pynput
 
 
 
-# import PyQt5
-import pyautogui
-import numpy
-import easyocr
-import pydirectinput
-import requests
+# import PyQt5 
+import pyautogui # for taking screenshots, also needed for some other packages
+import numpy # used for some complicated stuff :shrug:
+import easyocr # for reading the screenshots we take
+import requests # used for sending webhooks
 
 # --------------------------------------------------
 # 3. Initialize EasyOCR Reader and Input Setup
@@ -97,17 +96,17 @@ reader = easyocr.Reader(['en'], gpu=False) # Change to true if needed, only comp
 
 
 def MouseLeft(x,y):
-    if OS == "Windows":
+    if OS == "Windows": # if the OS is windows
         pydirectinput.click(x,y)
-    else:
+    else: # if the OS is not windows
         pynputmouse.click(Button.left)
 
 def Keyboard(button, duration):
-    if OS == "Windows":
+    if OS == "Windows": # if the OS is windows
         pydirectinput.keyDown(button)
         time.sleep(duration)
         pydirectinput.keyUp(button)
-    else:
+    else: # if the OS is not windows
         pynputkeyboard.press(button)
         time.sleep(duration)
         pynputkeyboard.release(button)
@@ -117,9 +116,9 @@ def Keyboard(button, duration):
 def send_webhook_alert(message):
     payload = {"content": message}
     try:
-        screenshot = pyautogui.screenshot()
-        buffer = io.BytesIO()
-        screenshot.save(buffer, format="PNG")
+        screenshot = pyautogui.screenshot() # screenshot
+        buffer = io.BytesIO() 
+        screenshot.save(buffer, format="PNG") 
         buffer.seek(0)
 
         files = {"file": ("screenshot.png", buffer, "image/png")}
@@ -150,7 +149,7 @@ def extract_target_bearing(ocr_text):
 
     text = ocr_text
 
-    match = re.search(r"\b\d+\b", text)
+    match = re.search(r"\b\d+\b", text) # find the first number in the text
 
     if match:
         first_number = int(match.group())
@@ -161,7 +160,7 @@ def extract_current_bearing(ocr_text):
     
     text = ocr_text
 
-    match = re.search(r"\b(\d+)\b(?!.*\b\d+\b)", text)
+    match = re.search(r"\b(\d+)\b(?!.*\b\d+\b)", text) # find the second number in the text
 
     if match:
         last_number = int(match.group(1))
