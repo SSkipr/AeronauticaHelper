@@ -1,241 +1,289 @@
-⚠️ **SO SO SOON**
+<div align="center">
 
+  <h1>
+    <img src="https://github.com/user-attachments/assets/5dd9d0a5-c24b-4b94-9afa-a9692a72e46f" width="25" height="25" alt="AeroHelperLogo" />
+    AeronauticaHelper
+  </h1>
 
-# <img src="https://github.com/user-attachments/assets/5dd9d0a5-c24b-4b94-9afa-a9692a72e46f" width="25" height="25" alt="AeroHelperLogo" /> AeronauticaHelper
+  <p>
+    <a href="https://github.com/SSkipr/AeronauticaHelper/releases"><img src="https://img.shields.io/badge/Version-4.0.0-blue" alt="Version"></a>
+    <a href="https://github.com/SSkipr/AeronauticaHelper"><img src="https://img.shields.io/badge/Platform-Windows%20%7C%20macOS-0078D6" alt="Platform"></a>
+    <a href="https://discord.gg/acdQ6BFrFs"><img src="https://img.shields.io/badge/Discord-Join-5865F2" alt="Discord"></a>
+  </p>
+
+  <p>
+    <a href="https://github.com/SSkipr/AeronauticaHelper/releases"><strong>⭐ Download v4</strong></a>
+    &nbsp;·&nbsp;
+    <a href="https://aeronautica-helper.vercel.app/"><strong>🌐 Visit the Website</strong></a>
+  </p>
+
+</div>
 
 ## 🚀 Introduction
 
-Welcome to **AeronauticaHelper** – your all-in-one AFK automation companion for [Aeronautica](https://www.roblox.com/games/6647962258/UPD-Aeronautica), the ship/aircraft simulator on Roblox. Whatever your feelings are about AeroHelper, throw them out the window! Everything is different!
+Welcome to **AeroHelper** – your all-in-one AFK automation companion for [Aeronautica](https://www.roblox.com/games/6647962258/UPD-Aeronautica), the ship/aircraft simulator on Roblox.
 
-This is not an exploit, nor malware. It's fully **open source**, and functions by:
+If you used AeroHelper before, throw your expectations out the window. Everything has been rewritten from scratch: cleaner architecture, more reliable OCR, faster cycling, and a significantly smarter AutoPilot.
+
+This is **not** an exploit or malware. It is fully **open source**, and works by:
+
 - Taking a **screenshot**
 - Processing it with **OCR**
 - Extracting values using **regex**
 - Simulating **human-like mouse and keyboard actions**
----
 
 ## 🧾 Features
 
 ### 🚢 Boat AutoPilot
 
-Boat AutoPilot allows you to AFK full job cycles by:
-- Refueling
-- Performing turnaround maintenance
-- Accepting the highest-paying job
-- Starting the boat
-- Steering the ship
-- Ending the route
-- Repeating
+Handles complete AFK job cycles including:
 
-It currently supports select routes between airports that allow straight-line navigation.
+- Detecting your current airport
+- Performing turnaround maintenance
+- Evaluating and selecting the highest-paying available route
+- Starting the vessel
+- Steering to destination (AutoSteer)
+- Precision docking and ending the route
+- Repeating indefinitely
+
 <details><summary>🌍 Supported Boat Routes</summary>
 
-**Long-Haul:**
-- Leovetsk ⇄ Tikaranto
 - Leovetsk ⇄ Auchenburgh
-- Eisenhardt Municipal ⇄ Auchenburgh
-- Nordspyd ⇄ Norman
-- Nordspyd ⇄ Udyanapura
-- Kapa ⇄ Hipe
-- Umibutsu ⇄ Hipe
-- Tenera Palm ⇄ Nordspyd
-
-**Express:**
-- Leovetsk ⇄ Kitesboro
+- Leovetsk ⇄ Tierdam
+- Sandris ⇄ Tenang
 - Rawaki ⇄ Harden
 - Rawaki ⇄ Amaras
 
-<img width="1075" height="1084" alt="v3 5Routes" src="https://github.com/user-attachments/assets/431504c0-f077-4e24-befb-7e034119d1e8" />
+<img width="1075" height="1084" alt="v3 5Routes" src="https://aeronautica-helper.vercel.app/v4AutoPilotRoutes.png" />
 
 </details>
-
-##
-
-### 🛩️ Airship AutoPilot
-
-This works similarly to the Boat AutoPilot but includes altitude control. After the airship is spawned via AutoPilot, it will first rise to 500 feet above the terrain below. Then, it will ascend to a user-defined altitude above sea level. Once the airship is 10 nautical miles from its destination, it will descend to 100 feet above the terrain.
-
-<details><summary>↗️ Supported Airship Routes</summary>
-
-- **Nordspyd ⇄ Valois**
-
-</details>
-
-##
-
-🕧 "Start AutoPilot Mid Mission" briefly skips the vehicle spawning sequence once.
-##
 
 ### 🧭 AutoSteer
-Lines up your vehicle to match a target **bearing**. Uses OCR to calculate angle difference and applies smart turns via keypresses.
 
-> Especially useful when navigating through multiple waypoints or tight paths. **Customize Aeronautica's in-game flight plan, and AeroHelper will follow the path!** (assuming this [issue](https://github.com/SSkipr/AeronauticaHelper/issues/10) is resolved)
+Lines up your vehicle to match a target **bearing** using OCR-read headings. Applies smooth, human-like turns via timed key presses.
 
-##
+> Works across boats, airships, and aircraft. Especially useful with [multi-waypoint](https://aeronautica-helper.vercel.app/help#custom-waypoint-mission-guide) flight plans.
 
-### 💥AutoRejoin (\Relaunch)
-Disconnected? Roblox crash? No worries – AeroHelper detects this and will:
+### 💥 AutoRejoin
+
+Disconnected or crashed? AeroHelper detects this and will:
+
 - Quit the Roblox application
-- Rejoin and continue the job at hand
+- Rejoin and resume the current job
 
-##
+### 📡 Monitoring
+
+Keeps AeroHelper watching your vehicle without running full AutoPilot. Useful for manual flights where you just want alerts if something goes wrong.
 
 ### 📢 Webhook Alerts
 
-Sends alerts through your webhook when:
-- Disconnected
-- Crashed
-- Fuel low/depleted
-- Collision or obstruction
-- OCR issues
-- ETC
+Sends real-time alerts to your Discord webhook when:
 
-Critical alerts get an `@everyone` ping. Optional debug alerts can be toggled in the app under 'Verbose Notifications'.
-
-### 🔍 Feature Support Matrix
-
-| Feature              | Boat 🚢 | Airship 🎈 | Aircraft ✈️ | Helicopter 🚁 |
-|----------------------|--------|------------|-------------|---------------|
-| AutoPilot            | ✅     | ✅         | ❌          | ❌            |
-| AutoSteer            | ✅     | ✅         | ✅          | ❌            |
-| AutoRejoin           | ✅     | ✅         | ✅          | ✅            |
-| Webhook Alerts       | ✅     | ✅         | ✅          | ✅            |
-| Anti-AFK             | ✅     | ✅         | ✅          | ✅            |
+- Disconnected or crashed
+- Fuel low or depleted
+- Collision or obstruction detected
+- OCR issues arise
+- Missions complete
+- etc...
 
 ---
 
-## 🛠️ Installation Guide (or [>> Download <<](https://github.com/SSkipr/AeronauticaHelper/releases) the compiled version)
+## 🛠️ Installation
 
-### ✅ Supported OS:
-- Windows
+### ✅ Supported OS
 
-*MacOS Support has been dropped. I am extremely sorry for the inconvenience. If you or someone you know can make this work on Mac, reach out to me!*
+- **Windows**
+- macOS *(may experience more bugs and feature mismatch due to the lack of support)*
 
-### 1️⃣ Python Setup
-Install **[Python 3.11.3](https://www.python.org/downloads/release/python-3113/)**
 
-### 2️⃣ Install Required Libraries
+# [Download](https://github.com/SSkipr/AeronauticaHelper/releases) the Compiled Version (high recomended)
 
-Execute the following command in your CMD terminal:
+or use the manual installation:
+
+### 1️⃣ Install Python
+
+Install **[Python 3.11](https://www.python.org/downloads/release/python-3113/)** - make sure to check **"Add Python to PATH"** during setup.
+
+### 2️⃣ Install Dependencies
+
+Open a terminal in the project folder and run:
 
 ```bash
-py -m pip install PyQt5 requests pyautogui pynput psutil Pillow numpy mousekey winsdk "python-doctr[torch]" pygetwindow torch
+py -m pip install -r requirements.txt
 ```
 
-### 3️⃣ Download and Setup
-Grab the repo:  
-[Download ZIP](https://github.com/SSkipr/AeronauticaHelper/archive/refs/heads/Standard.zip)
+Or let AeroHelper do it for you - it will prompt you on first launch if anything is missing.
 
-Your folder should look like:
+### 3️⃣ Download
+
+[Download ZIP](https://github.com/SSkipr/AeronauticaHelper/archive/refs/heads/main.zip) and extract it, or clone the repo:
+
+```bash
+git clone https://github.com/SSkipr/AeronauticaHelper.git
+```
+
+Your folder structure should look like:
 
 ```
 /AeronauticaHelper
-├── app.py (main)
-├── core.py
-├── autopilot.py
-├── data.txt (after running application)
-├── log_data.txt (after running application)
-├── LICENSE.md
-├── README.md
-└── ETC...
+├── AeroHelper/
+│   ├── main.py          ← entry point
+│   ├── config.py
+│   ├── automation/
+│   ├── input/
+│   ├── ocr/
+│   ├── ui/
+│   └── utils/
+├── AeroHelper.env       ← created on first run
+├── AeroHelper.log       ← created on first run
+├── requirements.txt
+└── README.md
 ```
 
-### 4️⃣ Running the App
-**If you have previous experience running Python files, just run ```app.py```, if not:**
+### 4️⃣ Run
 
-Right click ```app.py``` and select 'Edit with Python IDE'
+```bash
+py -m AeroHelper
+```
 
-At the top of the newly opened window, click 'Run'
+Or right-click `AeroHelper/main.py` → *Edit with IDLE* → *Run → Run Module*.
 
-Then click 'Run Module'
+On macOS, use `python3 -m pip install -r requirements.txt` and `python3 -m AeroHelper` instead of `py`.
+
+### 🍎 macOS setup (experimental)
+
+#### 1.1 SSL certificates
+
+If you installed Python from [python.org](https://www.python.org/downloads/) on Mac, you *may* need to do this before `pip install` works:
+
+1. Open **`/Applications/Python 3.x`** in Finder (`3.x` = your version, e.g. `Python 3.11`).
+2. Double-click **`Install Certificates.command`**. A Terminal window opens and installs the required certificates.
+
+    ![Install Certificates on macOS](https://github.com/user-attachments/assets/d41ea9b3-23ec-4a12-9ab6-793b75e2c779)
+
+Not using Python from python.org? Skip this step.
+
+#### 1.2 System permissions
+
+Grant permissions in **System Settings → Privacy & Security**:
+
+- **Accessibility** - enable AeroHelper (or Terminal/Python if running from source)
+- **Screen Recording** - needed for screenshots and OCR
+
+If macOS prompts you on first launch, click **Allow**, then restart AeroHelper.
+
+#### macOS limitations
+
+- **Human-intervention pause** is not available - use **Stop** to end automation.
+- **Auto App Shutdown** is Windows-only.
+- If Roblox does not come to the front after **Start**, click it after beginning automation.
+
+More help: **[Help Page → macOS setup](https://aeronautica-helper.vercel.app/help#macos-setup)**
 
 ---
 
-## 🆕 Version 3.6 Highlights
-- **Fixed:**
-  - Auchenburgh AutoPilot spelling bug
-  - Fuel extraction regex bug  
-  - Clicking 'End Sail' on red bug
-  - Different OS language issues (?)
-  - Webhook notifications bug
-  - Waypoint locking (targets other than DEST) bug (still waiting for Fly to [fix](https://github.com/SSkipr/AeronauticaHelper/issues/10) the in-game bug though...)
-  - UI performance bug
-  - Import minimal libraries
+## 🆕 Version 4 Highlights
 
- - Removed Eisenhardt Municipal ⇄ Tikaranto Boat AutoPilot Route
+SSkipr: This is all completely new from the ground up, using your feedback. I am so serious... It has been tested on multiple different machines and took WAY too many hours because I want you to have the best experience possible. THIS BETTER WORK. I hope you enjoy.
 
+- **Architecture & codebase**
+    - Rebuilt from scratch, not a patch on v3.x
+    - Modular package layout: automation, input, OCR, UI, utils, notifications
+    - Dedicated controller, config, state, logger, and device client modules
+    - EasyOCR pipeline (lighter deps than the old DocTR/torch stack)
+    - Per-network API access via HMAC fingerprint (no local credentials)
+    - Settings stored in `AeroHelper.env` instead of scattered files
 
+- **Steering & navigation**
+    - Physics-based turn model replaces v3's fixed angle buckets (7s / 5s / 3s / …)
+    - Small corrections use a **quadratic ramp** (√(θ·T_ramp/ω_max)); larger turns scale **linearly** (θ/ω_max)
+    - Proper 360° wrap via shortest signed angle difference (v3 used naive `abs(current - target)`)
+    - Throttle-aware hold times: lower throttle = longer steer hold (100/throttle% blend)
+    - Heading & distance **EWMA** smoothing for stable docking reads
+    - **Blended dock approach**: entry bearing → dock bearing as distance drops inside 5 nm
+    - Per-airport **exit bearings** and timed undock sequences before open-water steering
+    - **Stuck-distance recovery**: Z hold + A/D alternation (up to 200s), then W boost if distance flatlines
+    - Oscillation detection with Discord alert (successor to v3 "Auscultation" warnings)
+    - ICAO/DEST bearings must match **3 consecutive cycles** before accepting a waypoint change
 
-### Version 3.5 Highlights
-- 💥 Airship AutoPilot
-  - With customizable Altitude & Fuel Percentage
-- 👁️ New OCRs (hopefully this puts all the OCR errors to rest!)
-  - 🌙 Because the OCR works better at night with nightvision on, AeroHelper enables nightvision from 16:00-06:00
-  - Recently, I've learned that OCR Engines degrade over time without proper care... If the error rate is high, AeroHelper will take a brief break to reinitialize and clear the caches
-  - Bearings are used when detected twice in a row
-- 🚢 Revamped Boat AutoPilot
-- 📷 Images are upscaled & greyscaled before OCR processing
-- 🎯 New Boat AutoPilot Routes (thanks Yowane Haku)
-- 🔨 Auto Maintenance
-- 🔁 AutoRejoin now handles Roblox crashes
-- 👋 AeroHelper minimizes after starting
-- ⛽ Low fuel warning
-- ↔️ Auscultation detection and warning
-- ℹ️ New UI
-- 📢 Feedback to Developer
-- 🤚 Need Help button
-- 📰 Issues & News
-- ❌ AutoPilot incorrect lobby alert
-- ⚠️ [Need Help](https://aeronautica-helper.vercel.app/help) redirect
-- 🔢 Decimals now work in the UI
-- ➕ And more!
+- **OCR & parsing**
+    - Single full-screen EasyOCR pass (replaces separate DocTR crops for target vs current bearing)
+    - WinSDK OCR on Windows where available; Apple Vision on macOS; no PyTorch/DocTR install
+    - ROI fallback when ICAO/bearing reads look suspicious
+    - Hardened regex parser for speed, throttle, fuel, distance, and headings
+    - Fuel reads ignore DEST-adjacent false positives
 
-### Version 3 Highlights
-- 🚤 Full Boat AutoPilot
-- 🎈 Airship AutoSteer support
-- 🔁 AutoRejoin across all vehicle types
-- 🎯 Precision Docking (AutoPilot)
-- 🤫 Auto hide player list/chat
-- 🧠 Smarter crash detection
-- 🚫 Excludes "WINDY" and "KNOTS" from bearing calculations
-- 🧮 Accepts negative distances (waypoints behind the ship)
-- 📉 Sends error alerts if movement > 20 or < -20
-- 🕵️ Anonymous Data Sharing
+- **AutoPilot flow**
+    - Explicit phases: spawn & route pick → undock → cruise steer → dock alignment → final dock
+    - OCR-detects current airport, compares payouts across destinations, picks best route
+    - Jobs UI refresh recovery if listings fail mid-evaluation
+    - Auto throttle pull-back at ≤3 nm and ≤1.5 nm (Shift+S taps)
+    - Final dock: End Sail color check (white = ready), long-Z retry round, multiplier-scaled waits
+    - Return-to-lobby detection resets back to Phase 1 automatically
+    - Start Mid-Mission: skip spawn when already underway
+
+- **Three automation modes**
+    - 👀 **Monitoring** - watch speed, fuel, distance, and alerts without touching inputs
+    - 🧭 **AutoSteer** - bearing-based steering with custom waypoint support
+    - 🤖 **AutoPilot** - full AFK loop for boat and airship licenses only
+    - Plain-language mode descriptions in the UI (no jargon)
+    - Start AutoPilot Mid-Mission option
+
+- **AutoPilot routes (v4)**
+    - Curated route map with distance tiers (blue / red / orange / black)
+    - Leovetsk ⇄ Auchenburgh
+    - Leovetsk International > Tierdam Airfield
+    - Sandris ⇄ Tenang
+    - Rawaki ⇄ Harden · Rawaki ⇄ Amaras
+    - Routes trimmed to vehicles that can realistically complete AFK loops
+
+- **App & UI**
+    - Redesigned desktop UI with mode emojis and clearer labels
+    - Live Known Issues panel (pulled from the website API)
+    - In-game status overlay
+    - Consent / ToS acknowledgment on first launch
+    - Auto App Shutdown: block interfering processes each cycle
+    - Optional share-data-with-developer + one-time override button
+    - AutoRejoin on disconnect or Roblox crash
+    - Human intervention detection (pauses when you take over)
+    - Discord webhook alerts with optional screenshot attachments
+
+- **Website, API, and AeroMulti**
+    - Full [website](https://aeronautica-helper.vercel.app/) v4.0 refresh
+    - Secured REST API: telemetry, issues, feedback, data sharing (network fingerprint auth)
+    - Rate limits, input validation, and IP-hash checks on protected routes
+    - [AeroMulti](https://aeronautica-helper.vercel.app/aeromulti) by AeroHelper: server multiplier scanner with API ingest (see site for Discord access)
+    - Terms of Service and data-sharing policy pages
+    - [Discord community server](https://discord.gg/acdQ6BFrFs) for support and API or multiplier data info
+    - Help page, feedback form, and contributor credits
+
+- **Changed from v3.x** ([GitHub Standard branch](https://github.com/SSkipr/AeronauticaHelper))
+    - Curated AFK route set with distance tiers instead of v3's long express/long-haul list
+    - v3 airship AutoPilot altitude loop (e.g. Nordspyd ⇄ Valois) not carried over - v4 AutoPilot targets boat AFK loops. Airship AutoPilot will come shortly (AutoSteer will work, however).
+    - Removed leeway setting; arrival uses distance thresholds + dock phases instead
+    - Removed automatic nightvision toggle and DocTR engine cooldown/reinit breaks
+    - macOS support restored (experimental) where v3.6 dropped it
+
+- **Also in v4**
+    - Compiled `.exe` release - no Python setup required
+    - Python source install via `requirements.txt`
+    - Windows (primary) and experimental macOS support
 
 ---
 
 ## 🙋 FAQ
 
-Visit our dedicated [help page](https://aeronautica-helper.vercel.app/help) for help regarding anything AeroHelper related. 
-If it is an installation issue, I recommend consulting ChatGPT as it is extremely helpful and, unlike me, responds instantly.
----
-
-## 📡 Anonymous Data Sharing (Optional)
-
-If enabled, this will send:
-- Your `data.txt`
-- `log_data.txt`
-- Webhook URL
-
-Used only for **bug reports and troubleshooting.** You may be contacted (via your webhook) with fixes or follow-up questions. Logs are not stored long-term.
+Visit the dedicated **[Help Page](https://aeronautica-helper.vercel.app/help)** for setup help, troubleshooting, and known issues.
 
 ---
 
-## 📎 Useful Links
+## ⭐ Support the Project
 
-💻 [AeroHelper Website](https://aeronautica-helper.vercel.app/)
+If AeroHelper saves you time:
 
-🚢 [Boat AutoPilot Map](https://github.com/user-attachments/assets/707a9f5d-f00a-4271-9bce-3adf071a4e04)
-
-
----
-
-## ⭐ Support Us!
-
-If you find this tool useful:
 - Leave a ⭐ on the repo
-- Follow the project
-- Submit issues or ideas via [GitHub](https://github.com/SSkipr/AeronauticaHelper/issues) or [@sskipr](https://discord.gg/3adphMca)
+- Submit issues or suggestions via [GitHub](https://github.com/SSkipr/AeronauticaHelper/issues)
+- Follow for updates
 
 **Thanks for using AeroHelper ❣️**
 
@@ -243,72 +291,48 @@ If you find this tool useful:
 
 ## 📈 Roadmap
 
-- AI Plane Pathfinding (~v4)
+- 🔜 Airship AutoPilot (v4.x)
+- 🔜 Additional boat routes
+- 🔭 AeroHelper x AeroMulti (for autonomously finding highest job multiplier)
 
 ---
 
-# Contribution
+## 🤝 Contributors
 
-My appreciation for all of the contributors cannot be overstated. A special thanks to the Python libraries that made this project possible! Thank you all!
+**SSkipr** - Lead Developer
+
+**Person-12** - Contributor & QA Tester
+
+**She3pd0g** - Contributor
+
+**muffin.** - QA Tester
 
 <a href="https://github.com/SSkipr/AeronauticaHelper/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=SSkipr/AeronauticaHelper" />
 </a>
 
+---
 
-### **SSkipr** - Lead Developer
-
-### **Person-12** - Contributor
-
-### **She3pd0g** - Contributor
-
-### **muffin.** - QA Tester
+## 📦 Libraries
 
 
-## Prominent Libraries:
+| Library       | Role                         |
+| ------------- | ---------------------------- |
+| EasyOCR       | OCR engine                   |
+| PyQt5         | User interface               |
+| Pillow        | Image processing             |
+| NumPy         | Data processing              |
+| pynput        | Input control                |
+| mousekey      | Mouse acceleration (Windows) |
+| psutil        | System information           |
+| requests      | HTTP                         |
+| python-dotenv | Config management            |
+| winsdk        | Native Windows OCR fallback  |
+| pywin32       | Windows API access           |
+| torch         | ML backend for EasyOCR       |
 
-Doctr - OCR Engine
+*Standard library modules: asyncio, datetime, json, logging, math, os, pathlib, re, subprocess, sys, threading, time, uuid, webbrowser*
 
-Winrt - OCR Engine
+---
 
-Mousekey - Input Control
-
-Numpy - Data Processing
-
-PIL - Image Processing
-
-Psutil - System Information
-
-Pynput - Input Control
-
-Pyautogui - Automation
-
-PyQt5 - User Interface
-
-Requests - HTTP Library
-
-Torch - ML Framework
-
-GC - Memory Access
-
-
-## Libraries:
-
-Asyncio
-Datetime
-Importlib
-IO
-JSON
-Logging
-Math
-OS
-Pathlib
-Platform
-Random
-RE
-Subprocess
-SYS
-Threading
-Time
-UUID
-Webbrowser
+### [🌐 Visit the Website](https://aeronautica-helper.vercel.app/) · [📥 Download v4](https://github.com/SSkipr/AeronauticaHelper/releases) · [🙋 Help](https://aeronautica-helper.vercel.app/help)
