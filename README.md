@@ -6,7 +6,7 @@
   </h1>
 
   <p>
-    <a href="https://github.com/SSkipr/AeronauticaHelper/releases"><img src="https://img.shields.io/badge/Version-4.0.0-blue" alt="Version"></a>
+    <a href="https://github.com/SSkipr/AeronauticaHelper/releases"><img src="https://img.shields.io/badge/Version-4.0.1-blue" alt="Version"></a>
     <a href="https://github.com/SSkipr/AeronauticaHelper"><img src="https://img.shields.io/badge/Platform-Windows%20%7C%20macOS-0078D6" alt="Platform"></a>
     <a href="https://discord.gg/acdQ6BFrFs"><img src="https://img.shields.io/badge/Discord-Join-5865F2" alt="Discord"></a>
   </p>
@@ -184,6 +184,12 @@ More help: **[Help Page → macOS setup](https://aeronautica-helper.vercel.app/h
 
 ## 🆕 Version 4 Highlights
 
+### v4.0.1
+
+- Metric HUD units (`km` / `km/h`) accepted and converted to nm / knots
+- More tolerant OCR fuel/distance reads (missing `%`, doubled decimals, WinRT `843%` → `84.3`)
+- Phase 1 names unsupported spawn hubs (e.g. Kashio / Clarence) instead of a generic airport-not-found fail - use a supported route airport or Start Mid-Mission
+
 SSkipr: This is all completely new from the ground up, using your feedback. I am so serious... It has been tested on multiple different machines and took WAY too many hours because I want you to have the best experience possible. THIS BETTER WORK. I hope you enjoy.
 
 - **Architecture & codebase**
@@ -274,6 +280,7 @@ SSkipr: This is all completely new from the ground up, using your feedback. I am
 ## 🙋 FAQ
 
 Visit the dedicated **[Help Page](https://aeronautica-helper.vercel.app/help)** for setup help, troubleshooting, and known issues.
+
 
 ---
 
