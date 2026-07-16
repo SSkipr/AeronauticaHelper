@@ -6,7 +6,7 @@
   </h1>
 
   <p>
-    <a href="https://github.com/SSkipr/AeronauticaHelper/releases"><img src="https://img.shields.io/badge/Version-4.0.1-blue" alt="Version"></a>
+    <a href="https://github.com/SSkipr/AeronauticaHelper/releases"><img src="https://img.shields.io/badge/Version-4.0.2-blue" alt="Version"></a>
     <a href="https://github.com/SSkipr/AeronauticaHelper"><img src="https://img.shields.io/badge/Platform-Windows%20%7C%20macOS-0078D6" alt="Platform"></a>
     <a href="https://discord.gg/acdQ6BFrFs"><img src="https://img.shields.io/badge/Discord-Join-5865F2" alt="Discord"></a>
   </p>
@@ -183,6 +183,13 @@ More help: **[Help Page → macOS setup](https://aeronautica-helper.vercel.app/h
 ---
 
 ## 🆕 Version 4 Highlights
+
+### v4.0.2
+
+- Play hover is move-only (no double-click), so the Jobs flyout can stay open
+- Jobs click retries with Play re-hover if the submenu isn’t ready
+- `Back` no longer matches **Welcome back** on the lobby screen
+- Phase 1 error recovery retries Play → Jobs even when already on lobby (no safe Back)
 
 ### v4.0.1
 
