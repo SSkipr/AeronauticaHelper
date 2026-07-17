@@ -6,7 +6,7 @@
   </h1>
 
   <p>
-    <a href="https://github.com/SSkipr/AeronauticaHelper/releases"><img src="https://img.shields.io/badge/Version-4.0.2-blue" alt="Version"></a>
+    <a href="https://github.com/SSkipr/AeronauticaHelper/releases"><img src="https://img.shields.io/badge/Version-4.0.3-blue" alt="Version"></a>
     <a href="https://github.com/SSkipr/AeronauticaHelper"><img src="https://img.shields.io/badge/Platform-Windows%20%7C%20macOS-0078D6" alt="Platform"></a>
     <a href="https://discord.gg/acdQ6BFrFs"><img src="https://img.shields.io/badge/Discord-Join-5865F2" alt="Discord"></a>
   </p>
@@ -183,6 +183,11 @@ More help: **[Help Page → macOS setup](https://aeronautica-helper.vercel.app/h
 ---
 
 ## 🆕 Version 4 Highlights
+
+### v4.0.3
+
+- AutoSteer: if throttle reads 0%, hold W for 10 seconds to restore throttle (skipped during AutoPilot docking)
+- Monitoring: **Unlock 5 view** option — skips pressing `5` each cycle and ignores current HDG (DEST can still be read)
 
 ### v4.0.2
 
