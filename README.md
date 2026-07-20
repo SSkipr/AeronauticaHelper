@@ -6,7 +6,7 @@
   </h1>
 
   <p>
-    <a href="https://github.com/SSkipr/AeronauticaHelper/releases"><img src="https://img.shields.io/badge/Version-4.0.3-blue" alt="Version"></a>
+    <a href="https://github.com/SSkipr/AeronauticaHelper/releases"><img src="https://img.shields.io/badge/Version-4.1.0-blue" alt="Version"></a>
     <a href="https://github.com/SSkipr/AeronauticaHelper"><img src="https://img.shields.io/badge/Platform-Windows%20%7C%20macOS-0078D6" alt="Platform"></a>
     <a href="https://discord.gg/acdQ6BFrFs"><img src="https://img.shields.io/badge/Discord-Join-5865F2" alt="Discord"></a>
   </p>
@@ -184,10 +184,19 @@ More help: **[Help Page → macOS setup](https://aeronautica-helper.vercel.app/h
 
 ## 🆕 Version 4 Highlights
 
+### v4.1.0
+
+- Startup: full-screen **10s countdown** overlay before automation begins
+- AutoSteer / Monitoring: optional **Throttle up if not 100%** - when enabled, hold W for 10s if throttle is below 100% (replaces the old auto hold-W-at-0%; skipped during AutoPilot docking/undocking). Urgent alerts show whether the setting is on and if W will be held
+- AutoSteer: sticky ICAO lock (3-cycle confirm; keeps previous bearing if OCR briefly misses)
+- OCR: prefers locked/custom waypoint; ignores runway designators (e.g. ILS 26R); accepts miles / mph / m/s HUD units
+- AutoPilot: fuzzy Turnaround OCR + faster Play → Jobs so the flyout stays open; clearer Phase 1 / overlay error help
+- UI: Join Discord button, status/issues panels grow with the window, main window restores on Stop; **Quit after 5 consecutive errors** marked recommended
+
 ### v4.0.3
 
 - AutoSteer: if throttle reads 0%, hold W for 10 seconds to restore throttle (skipped during AutoPilot docking)
-- Monitoring: **Unlock 5 view** option — skips pressing `5` each cycle and ignores current HDG (DEST can still be read)
+- Monitoring: **Unlock 5 view** option - skips pressing `5` each cycle and ignores current HDG (DEST can still be read)
 
 ### v4.0.2
 
