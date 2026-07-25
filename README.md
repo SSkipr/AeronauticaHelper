@@ -6,7 +6,7 @@
   </h1>
 
   <p>
-    <a href="https://github.com/SSkipr/AeronauticaHelper/releases"><img src="https://img.shields.io/badge/Version-4.1.0-blue" alt="Version"></a>
+    <a href="https://github.com/SSkipr/AeronauticaHelper/releases"><img src="https://img.shields.io/badge/Version-4.1.1-blue" alt="Version"></a>
     <a href="https://github.com/SSkipr/AeronauticaHelper"><img src="https://img.shields.io/badge/Platform-Windows%20%7C%20macOS-0078D6" alt="Platform"></a>
     <a href="https://discord.gg/acdQ6BFrFs"><img src="https://img.shields.io/badge/Discord-Join-5865F2" alt="Discord"></a>
   </p>
@@ -183,6 +183,14 @@ More help: **[Help Page → macOS setup](https://aeronautica-helper.vercel.app/h
 ---
 
 ## 🆕 Version 4 Highlights
+
+### v4.1.1
+
+- AutoPilot: AeroMulti-style **Play → Jobs** (hover Play → click → WinRT snap Jobs → double-click); confirms Jobs via Search field; clears bad Jobs cache on miss
+- Input: **MouseKey** natural moves for hover/move so Roblox gets real cursor events (Play flyout stays open)
+- OCR: heading accepts **TRK** / **H0G**; fixes `O`→`0` near HUD labels; smarter distance pick when engines disagree or a leading digit drops; uses previous distance for continuity
+- UI: Known Issues cards with priority + progress; tooltips on labels (no ⓘ clutter); **Throttle up if not 100%** also shown in AutoPilot
+- Webhooks: cleaner urgent-alert wording for throttle / stuck-distance
 
 ### v4.1.0
 
