@@ -6,7 +6,7 @@
   </h1>
 
   <p>
-    <a href="https://github.com/SSkipr/AeronauticaHelper/releases"><img src="https://img.shields.io/badge/Version-4.1.1-blue" alt="Version"></a>
+    <a href="https://github.com/SSkipr/AeronauticaHelper/releases"><img src="https://img.shields.io/badge/Version-4.1.2-blue" alt="Version"></a>
     <a href="https://github.com/SSkipr/AeronauticaHelper"><img src="https://img.shields.io/badge/Platform-Windows%20%7C%20macOS-0078D6" alt="Platform"></a>
     <a href="https://discord.gg/acdQ6BFrFs"><img src="https://img.shields.io/badge/Discord-Join-5865F2" alt="Discord"></a>
   </p>
@@ -183,6 +183,12 @@ More help: **[Help Page → macOS setup](https://aeronautica-helper.vercel.app/h
 ---
 
 ## 🆕 Version 4 Highlights
+
+### v4.1.2
+
+- AutoSteer: **sticky turn direction** near ~180° heading error so left/right cannot thrash; steer holds **capped (~25s)** so heading is re-checked sooner; oscillation recovery locks one side and dampens holds
+- AutoSteer: when distance is under the stop threshold, pause for **manual dock** with a dedicated **Destination Reached** Discord alert
+- Reconnect: retries optional **Reconnect** button (up to 3×, 20s apart) before Join after bringing Roblox to front
 
 ### v4.1.1
 
