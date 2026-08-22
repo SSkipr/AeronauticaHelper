@@ -6,7 +6,7 @@
   </h1>
 
   <p>
-    <a href="https://github.com/SSkipr/AeronauticaHelper/releases"><img src="https://img.shields.io/badge/Version-4.1.2-blue" alt="Version"></a>
+    <a href="https://github.com/SSkipr/AeronauticaHelper/releases"><img src="https://img.shields.io/badge/Version-4.1.3-blue" alt="Version"></a>
     <a href="https://github.com/SSkipr/AeronauticaHelper"><img src="https://img.shields.io/badge/Platform-Windows%20%7C%20macOS-0078D6" alt="Platform"></a>
     <a href="https://discord.gg/acdQ6BFrFs"><img src="https://img.shields.io/badge/Discord-Join-5865F2" alt="Discord"></a>
   </p>
@@ -183,6 +183,15 @@ More help: **[Help Page → macOS setup](https://aeronautica-helper.vercel.app/h
 ---
 
 ## 🆕 Version 4 Highlights
+
+### v4.1.3
+
+- AutoPilot: smarter **Yes** confirm (ignores Vehicles / Trade / etc., prefers the dialog); retries Turnaround / Yes with instant clicks; **caches Search** so leftover search text still opens Jobs
+- AutoSteer: **throttle-up at 0%** even during dock / undock (stuck engines, not the intentional 30–50%)
+- Monitoring: **custom waypoint** no longer pauses on HUD codes like ZEPHR; distance-stale urgent alerts wait **2 cycles**
+- OCR / Discord: distances **rounded to 2 decimals**; throttle reads without `%`; heading alerts use shortest-angle; Reconnect clicks map screenshot coords to screen
+- Performance: skip EasyOCR when native HUD text is already good; faster WinRT OCR / screenshots; quieter overlay when idle
+- Config: mission history stored in **AeroHelper.history.json**; Search button coords persist
 
 ### v4.1.2
 
