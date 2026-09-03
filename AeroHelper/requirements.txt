@@ -1,0 +1,19 @@
+PyQt5==5.15.10
+pynput==1.7.6
+easyocr==1.7.0
+Pillow==10.1.0
+requests==2.32.3
+python-dotenv==1.0.0
+numpy==1.24.3
+psutil==5.9.8
+
+# Windows-only native OCR and mouse acceleration
+winsdk; sys_platform == "win32"
+pywin32==306; sys_platform == "win32"
+mousekey; sys_platform == "win32"
+PyDirectInput; sys_platform == "win32"
+
+# macOS-only native window management and OCR (Apple Vision)
+pyobjc-framework-Cocoa; sys_platform == "darwin"
+pyobjc-framework-Quartz; sys_platform == "darwin"
+pyobjc-framework-Vision; sys_platform == "darwin"
