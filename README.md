@@ -6,7 +6,7 @@
   </h1>
 
   <p>
-    <a href="https://github.com/SSkipr/AeronauticaHelper/releases"><img src="https://img.shields.io/badge/Version-4.1.3-blue" alt="Version"></a>
+    <a href="https://github.com/SSkipr/AeronauticaHelper/releases"><img src="https://img.shields.io/badge/Version-4.1.4-blue" alt="Version"></a>
     <a href="https://github.com/SSkipr/AeronauticaHelper"><img src="https://img.shields.io/badge/Platform-Windows%20%7C%20macOS-0078D6" alt="Platform"></a>
     <a href="https://discord.gg/acdQ6BFrFs"><img src="https://img.shields.io/badge/Discord-Join-5865F2" alt="Discord"></a>
   </p>
@@ -51,8 +51,8 @@ Handles complete AFK job cycles including:
 - Leovetsk ⇄ Auchenburgh
 - Leovetsk ⇄ Tierdam
 - Sandris ⇄ Tenang
-- Rawaki ⇄ Harden
-- Rawaki ⇄ Amaras
+- Norman ⇄ Pembroke Plantation
+- Norman ⇄ Hemera Sound
 
 <img width="1075" height="1084" alt="v3 5Routes" src="https://aeronautica-helper.vercel.app/v4AutoPilotRoutes.png" />
 
@@ -184,6 +184,16 @@ More help: **[Help Page → macOS setup](https://aeronautica-helper.vercel.app/h
 
 ## 🆕 Version 4 Highlights
 
+### v4.1.4
+
+- AutoPilot: **Norman** routes replace Rawaki (Norman ⇄ Pembroke Plantation, Norman ⇄ Hemera Sound)
+- AutoPilot: Turnaround **Yes** retries (up to 5) and **stops** if the confirm stays open; hover Current Vehicle without click
+- AutoPilot: **Begin retry** — if spawn did not stick, restart Phase 1 (up to 2 attempts)
+- Stop: **immediate halt** — Stop interrupts key holds / sleeps instead of waiting out the cycle
+- Notifications: **Minimal / Urgent Only / Custom** — Custom lets you pick which categories ping @everyone
+- Intelligent Steering: starts from your current **Multiplier** and **saves** what it learns
+- AutoPilot always throttles up in cruise (Throttle-up checkbox is Monitoring / AutoSteer only)
+
 ### v4.1.3
 
 - AutoPilot: smarter **Yes** confirm (ignores Vehicles / Trade / etc., prefers the dialog); retries Turnaround / Yes with instant clicks; **caches Search** so leftover search text still opens Jobs
@@ -284,7 +294,7 @@ SSkipr: This is all completely new from the ground up, using your feedback. I am
     - Leovetsk ⇄ Auchenburgh
     - Leovetsk International > Tierdam Airfield
     - Sandris ⇄ Tenang
-    - Rawaki ⇄ Harden · Rawaki ⇄ Amaras
+    - Norman ⇄ Pembroke Plantation · Norman ⇄ Hemera Sound
     - Routes trimmed to vehicles that can realistically complete AFK loops
 
 - **App & UI**
