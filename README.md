@@ -6,7 +6,7 @@
   </h1>
 
   <p>
-    <a href="https://github.com/SSkipr/AeronauticaHelper/releases"><img src="https://img.shields.io/badge/Version-4.1.4-blue" alt="Version"></a>
+    <a href="https://github.com/SSkipr/AeronauticaHelper/releases/tag/v4.1.6_Beta"><img src="https://img.shields.io/badge/Version-4.1.6%20Beta-blue" alt="Version"></a>
     <a href="https://github.com/SSkipr/AeronauticaHelper"><img src="https://img.shields.io/badge/Platform-Windows%20%7C%20macOS-0078D6" alt="Platform"></a>
     <a href="https://discord.gg/acdQ6BFrFs"><img src="https://img.shields.io/badge/Discord-Join-5865F2" alt="Discord"></a>
   </p>
@@ -183,6 +183,17 @@ More help: **[Help Page → macOS setup](https://aeronautica-helper.vercel.app/h
 ---
 
 ## 🆕 Version 4 Highlights
+
+**v4.1.6 Beta** is an unofficial release. It has not gone through extensive testing. That is the new standard for beta releases.
+
+### v4.1.6 Beta
+
+- Pause: click the button, press a combo, then hit it while running to pause or resume. It does not count as grabbing the keyboard. Esc / Backspace clears it.
+- AutoPilot: still defaults to **highest payout**. Switch to **Custom** and uncheck destinations you do not want. Airports with only one option stay as-is.
+- Reconnect: if the game is offline, it waits instead of quitting. An in-progress mission is left alone. Offline does not burn a retry.
+- OCR: distance prefers the **DEST** line. Throttle at **0%** presses E, waits, then holds W. Notification mode is buttons, not a dropdown.
+- Routes (**beta**): AutoPilot **Routes** window. The official list loads from the AeroHelper server on startup and can change without a new app release. Dev mode edits your own airports, destinations, dock and exit bearings, and undock cycles.
+- **Reject flagged bearings** (**beta**, on by default): ignores waypoint names **FOGGY**, **WINDY**, and **CLEAR**, and map-zoom distances **1.3, 2.6, 5.3, 10.7, and 21.5 nm**. A DEST line that is a navaid range is skipped. Bearings are no longer cut down to the first two digits.
 
 ### v4.1.4
 
